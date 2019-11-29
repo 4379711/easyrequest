@@ -21,7 +21,7 @@ setup(
     maintainer='liuyalong',
     maintainer_email='4379711@qq.com',
     license='MIT License',
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    packages=find_packages(exclude=["*.log", "*.tests.*", "tests.*", "tests"]),
     platforms=["all"],
     python_requires='>=3.6.0',
     url='https://github.com/4379711/easyrequest',
@@ -49,7 +49,7 @@ setup(
                       'requests',
                       'gevent'
                       ],
-    include_package_data=True,
+    include_package_data=True
 )
 
 # python setup.py check                 检查错误

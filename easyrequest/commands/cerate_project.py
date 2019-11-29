@@ -1,29 +1,21 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/28 16:44
-# @Author  : Liu Yalong
-# @File    : cerate_project.py
 from __future__ import print_function
 import re
 import os
-import string
 from importlib import import_module
 from os.path import join, exists, abspath
-from shutil import ignore_patterns, move, copy2, copystat
-from easyrequest.utils.template import render_templatefile, string_camelcase
+from shutil import ignore_patterns, copy2, copystat
+from easyrequest.utils.template import MyTemplate, render_template_file, string_camelcase
 import easyrequest
 
+IGNORE = ignore_patterns('*.pyc', '.svn', '*.pyi', '__pycache__')
 TEMPLATES_TO_RENDER = (
-    ('scrapy.cfg',),
-    ('${project_name}', 'settings.py.tmpl'),
-    ('${project_name}', 'items.py.tmpl'),
-    ('${project_name}', 'pipelines.py.tmpl'),
-    ('${project_name}', 'middlewares.py.tmpl'),
+    ('>>{project_name}', 'settings.py.template'),
+    ('>>{project_name}', 'test_ooo.py.template'),
 )
 
-IGNORE = ignore_patterns('*.pyc', '.svn', '*.pyi')
 
-
-class Command:
+class CommandProject:
 
     @staticmethod
     def _is_valid_name(project_name):
@@ -54,40 +46,42 @@ class Command:
             if name in ignored_names:
                 continue
 
-            srcname = os.path.join(src, name)
-            dstname = os.path.join(dst, name)
-            if os.path.isdir(srcname):
-                self._copytree(srcname, dstname)
+            src_name = os.path.join(src, name)
+            dst_name = os.path.join(dst, name)
+            if os.path.isdir(src_name):
+                self._copytree(src_name, dst_name)
             else:
-                copy2(srcname, dstname)
+                copy2(src_name, dst_name)
         copystat(src, dst)
 
     def run(self, project_name):
 
+        # 新建的project存放路径
         project_dir = os.getcwd()
 
-        if exists(join(project_dir, 'flag.py')):
+        if exists(join(project_dir, 'manage.py')):
             print('Error: EasyRequest project already exists in %s' % abspath(project_dir))
             return
 
         if not self._is_valid_name(project_name):
             return
 
-        self._copytree(self.templates_dir, abspath(project_dir))
-        move(join(project_dir, 'modules'), join(project_dir, project_name))
+        self._copytree(self.templates_dir, join(abspath(project_dir), project_name))
+
         for paths in TEMPLATES_TO_RENDER:
             path = join(*paths)
-            tplfile = join(project_dir, string.Template(path).substitute(project_name=project_name))
-            render_templatefile(tplfile, project_name=project_name, ProjectName=string_camelcase(project_name))
-        print("New project '%s', using template directory '%s', "
-              "created in:" % (project_name, self.templates_dir))
+            tpl_file = join(project_dir, MyTemplate(path).substitute(project_name=project_name))
+            render_template_file(tpl_file, project_name=project_name, ProjectName=string_camelcase(project_name))
+
+        print("Create Project '%s in:' " % project_name)
         print("    %s\n" % abspath(project_dir))
 
         print("You can start your first spider with:")
         print("    cd %s" % project_dir)
-        print("    EasyRequest CreateProject example")
+        print("    EasyRequest CreateSpider first_spider")
 
     @property
     def templates_dir(self):
+        # 模板路径
         _templates_base_dir = join(easyrequest.__path__[0], 'templates')
         return join(_templates_base_dir, 'projects')

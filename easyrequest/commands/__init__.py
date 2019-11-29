@@ -3,19 +3,27 @@
 # @Author  : Liu Yalong
 # @File    : __init__.py.py
 import click
-from .cerate_project import Command
+from .cerate_project import CommandProject
+from .create_spider import CommandSpider
 
 
 @click.command(name='CreateProject')
-@click.option("--project_name", prompt="请输入模块名")  # prompt直接弹出一行，让用户输入
+# @click.option("--project_name", prompt="请输入模块名")  # prompt直接弹出一行，让用户输入
+@click.argument('project_name')
 def create_project_(project_name):
     """
-    创建项目
+    Create Project
     """
-    click.echo(f'{project_name}即将创建')
-    Command().run(project_name)
+    CommandProject().run(project_name)
 
-    click.echo(f'{project_name}创建完成')
+
+@click.command(name='CreateSpider')
+@click.argument('spider_name')
+def create_spider_(spider_name):
+    """
+    Create Spider
+    """
+    CommandSpider().run(spider_name)
 
 
 # 分组功能，将多个命令分组
@@ -26,7 +34,7 @@ def base_command():
 
 # 添加到组
 base_command.add_command(create_project_)
-# base_command.add_command(list_module)
+base_command.add_command(create_spider_)
 
 if __name__ == '__main__':
     base_command()
