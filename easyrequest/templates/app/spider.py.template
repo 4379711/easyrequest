@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+from easyrequest import CrawlSpider
+
+
+class >>classname(CrawlSpider):
+    start_urls = []
+
+    def run(self):
+        pass
+
+    def parse_item(self):
+        item = {}
+
+        return item

@@ -11,7 +11,6 @@ import easyrequest
 IGNORE = ignore_patterns('*.pyc', '.svn', '*.pyi', '__pycache__')
 TEMPLATES_TO_RENDER = (
     ('>>{project_name}', 'settings.py.template'),
-    ('>>{project_name}', 'test_ooo.py.template'),
 )
 
 
@@ -27,9 +26,10 @@ class CommandProject:
                 return False
 
         if not re.search(r'^[_a-zA-Z]\w*$', project_name):
-            print('Error: Project names must begin with a letter and contain only\nletters, numbers and underscores')
+            print('\033[32mError: Project names must begin with a letter and contain only\n'
+                  'letters, numbers and underscores\033[0m')
         elif _module_exists(project_name):
-            print('Error: Module %r already exists' % project_name)
+            print('\033[32mError: Module %r already exists\033[0m' % project_name)
         else:
             return True
         return False
@@ -59,8 +59,8 @@ class CommandProject:
         # 新建的project存放路径
         project_dir = os.getcwd()
 
-        if exists(join(project_dir, 'manage.py')):
-            print('Error: EasyRequest project already exists in %s' % abspath(project_dir))
+        if exists(join(project_dir, project_name)):
+            print('\033[32mError: EasyRequest project already exists in %s\033[0m' % abspath(project_dir))
             return
 
         if not self._is_valid_name(project_name):
@@ -77,8 +77,8 @@ class CommandProject:
         print("    %s\n" % abspath(project_dir))
 
         print("You can start your first spider with:")
-        print("    cd %s" % project_dir)
-        print("    EasyRequest CreateSpider first_spider")
+        print("    \033[32mcd %s\033[0m" % str(project_name))
+        print("    \033[32mEasyRequest CreateSpider first_spider\033[0m")
 
     @property
     def templates_dir(self):

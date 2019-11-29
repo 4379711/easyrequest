@@ -7,9 +7,12 @@ import re
 import os
 from os.path import join, exists, abspath
 from shutil import copyfile
+
+from easyrequest.utils.template import render_template_file, string_camelcase
+
 import easyrequest
 
-must_exists = {'settings', 'manage.py', 'apps'}
+must_exists = {'settings.py', 'manage.py', 'apps'}
 
 
 class CommandSpider:
@@ -18,7 +21,8 @@ class CommandSpider:
     def _is_valid_name(spider_name):
 
         if not re.search(r'^[_a-zA-Z]\w*$', spider_name):
-            print('Error: spider names must begin with a letter and contain only\nletters, numbers and underscores')
+            print('\033[32mError: spider names must begin with a letter and contain only\n'
+                  'letters, numbers and underscores\033[0m')
             return False
         else:
             return True
@@ -30,21 +34,24 @@ class CommandSpider:
         cmd_path = os.getcwd()
         file_list = set(os.listdir(cmd_path))
         if len(must_exists - file_list) > 0:
-            print(f"Error: Project don't exists,create project command:")
+            print(f"\033[32mError: Project don't exists,create project command:\033[0m")
             print('    EasyRequest CreateProject xxx')
             return
         spider_file_name = f'{spider_name}.py'
 
         if exists(join(cmd_path, 'apps', spider_file_name)):
-            print(f'Error: Spider "{spider_name}" already exists in %s')
+            print(f'\033[32mError: Spider "{spider_name}" already exists in %s\033[0m')
             return
+        src_name = join(self.templates_file, 'spider.py.template')
+        dst_name = join(abspath(cmd_path), 'apps', f'{spider_name}.py.template')
+        copyfile(src_name, dst_name)
+        render_template_file(dst_name, classname=string_camelcase(spider_name))
 
-        copyfile(self.templates_file, join(abspath(cmd_path), 'apps', spider_file_name))
-        print("Create Spider '%s in:' " % spider_file_name)
-        print("    %s\n" % join(abspath(cmd_path), 'apps', spider_file_name))
+        print("\033[32mCreate Spider '%s finished in:' " % spider_file_name)
+        print("    %s\033[0m" % join(abspath(cmd_path), 'apps', spider_file_name))
 
     @property
     def templates_file(self):
         # 模板路径
         _templates_base_dir = join(easyrequest.__path__[0], 'templates')
-        return join(_templates_base_dir, 'app', 'spider')
+        return join(_templates_base_dir, 'app')
