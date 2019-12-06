@@ -4,6 +4,9 @@
 # @File    : __main__.py
 import os
 import sys
+from colorama import init
+
+init(autoreset=True)
 
 if not __package__:
     path = os.path.join(os.path.dirname(__file__), os.pardir)

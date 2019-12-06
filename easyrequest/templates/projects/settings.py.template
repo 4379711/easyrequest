@@ -18,7 +18,7 @@ AUTO_USER_AGENT = True
 # REQUEST_DELAY = 3
 
 
-# Disable Telnet Console (enabled by default)
+# Disable Console (default: True)
 # CONSOLE_MESSAGE = False
 
 # Override the default request headers:
