@@ -4,11 +4,4 @@
 # @File    : load_spider.py
 
 from easyrequest.settings import default_settings
-from importlib import import_module
 
-class LoadSpider:
-
-    def load(self):
-        print(import_module(default_settings))
-
-LoadSpider().load()

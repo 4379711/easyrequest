@@ -2,7 +2,7 @@
 
 # EasyRequest settings for >>{project_name} project
 
-ProjectName = '>>{project_name}'
+PROJECT_NAME = '>>{project_name}'
 
 # write your spider name here which you want to run
 SPIDERS = ['']

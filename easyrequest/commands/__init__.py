@@ -5,6 +5,7 @@
 import click
 from .cerate_project import CommandProject
 from .create_spider import CommandSpider
+from .start_spider import CommandStartSpider
 
 
 @click.command(name='CreateProject')
@@ -26,6 +27,15 @@ def create_spider_(spider_name):
     CommandSpider().run(spider_name)
 
 
+@click.command(name='RunSpider')
+@click.argument('spider_name')
+def run_spider_(spider_name):
+    """
+    Run Spider
+    """
+    CommandStartSpider().run(spider_name)
+
+
 # 分组功能，将多个命令分组
 @click.group()
 def base_command():
@@ -35,6 +45,7 @@ def base_command():
 # 添加到组
 base_command.add_command(create_project_)
 base_command.add_command(create_spider_)
+base_command.add_command(run_spider_)
 
 if __name__ == '__main__':
     base_command()

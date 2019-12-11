@@ -40,7 +40,7 @@ class CommandSpider:
         spider_file_name = f'{spider_name}.py'
 
         if exists(join(cmd_path, 'apps', spider_file_name)):
-            print(f'\033[32mError: Spider "{spider_name}" already exists in %s\033[0m')
+            print(f'\033[32mError: Spider "{spider_name}" already exists \033[0m')
             return
         src_name = join(self.templates_file, 'spider.py.template')
         dst_name = join(abspath(cmd_path), 'apps', f'{spider_name}.py.template')
