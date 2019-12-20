@@ -7,13 +7,14 @@ from __future__ import print_function
 import re
 import os
 from os.path import join, exists
+
+from easyrequest.entrance.spider_runner import SpiderRunner
+from easyrequest.error import LoadError
+from easyrequest.request.spider import CrawlSpider
 from easyrequest.settings.load_settings import overridden_settings
 from easyrequest.utils.format_print import pprint
 
-
-from importlib import import_module
-
-from easyrequest.utils.load_module import load_module_from_path
+from easyrequest.utils.load_module import load_cls_from_module, load_module_from_path
 
 
 class CommandStartSpider:
@@ -45,10 +46,22 @@ class CommandStartSpider:
             pprint('You must execute the RunSpider command in the project directory')
             return
 
-        # 加载用户配置
+        # load user config
         user_settings_obj = load_module_from_path('settings.py', join(cmd_path, 'settings.py'))
 
-        # 覆盖默认配置
-        tmp_ = overridden_settings(user_settings_obj)
-        for k in tmp_:
-            print(k)
+        # override default config
+        settings = overridden_settings(user_settings_obj)
+
+        # load spider cls
+        spider_module = load_module_from_path(spider_name, join(cmd_path, join('apps', spider_file_name)))
+        iter_spider_cls = load_cls_from_module(spider_module, sub_class=CrawlSpider)
+        spclasses = list(iter_spider_cls)
+        if not spclasses:
+            raise LoadError(spider_name)
+        spider_cls = spclasses.pop()
+        # set spider config
+        spider_cls.settings = settings
+
+        runner = SpiderRunner(spider_cls)
+        spider = runner.load_spider()
+        print(spider.start_urls)

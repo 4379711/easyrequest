@@ -8,7 +8,7 @@ class >>classname(CrawlSpider):
     def run(self):
         pass
 
-    def parse_item(self):
+    def parse_response(self,response):
         item = {}
 
         return item

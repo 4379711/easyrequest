@@ -6,9 +6,9 @@ from . import default_settings
 
 
 class Settings:
-    def __init__(self, mod):
+    def __init__(self, setting):
         self.attribute = {}
-        self.update_by_mod(mod)
+        self.update_by_mod(setting)
 
     def __getitem__(self, item):
         if item not in self.attribute:
@@ -20,6 +20,9 @@ class Settings:
         for attr in dir(mod):
             if attr.isupper():
                 self.attribute[attr] = getattr(mod, attr)
+
+    def update(self, name, value):
+        self.attribute[name] = value
 
     def __setitem__(self, name, value):
         if name.isupper():

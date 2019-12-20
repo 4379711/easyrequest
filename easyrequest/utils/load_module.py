@@ -2,6 +2,7 @@
 # @Time    : 2019/12/10 16:13
 # @Author  : Liu Yalong
 # @File    : loads.py
+import inspect
 from importlib import import_module
 from importlib.util import spec_from_file_location, module_from_spec
 
@@ -36,8 +37,15 @@ def load_object(path):
 
 
 def load_module_from_path(name, location):
-    aa = module_spec = spec_from_file_location(name, location)
-    if aa is None:
+    """
+    Load an module given its absolute module file path (C://a//b//a.py), and return it.
+
+    :param name:module name
+    :param location:path,(C://a//b//a.py)
+    :return:module
+    """
+    module_spec = spec_from_file_location(name, location)
+    if module_spec is None:
         raise AttributeError(f"Can not find module {name} in {location}")
 
     module = module_from_spec(module_spec)
@@ -45,5 +53,21 @@ def load_module_from_path(name, location):
     return module
 
 
+def load_cls_from_module(mod, sub_class=object):
+    for obj in vars(mod).values():
+        if inspect.isclass(obj) and \
+                obj.__module__ == aa.__name__ and \
+                issubclass(obj, sub_class):
+            yield obj
+
+
 if __name__ == '__main__':
-    load_object('easyrequest.settings.default_settings')
+    # load_object('easyrequest.settings.default_settings')
+    aa = load_module_from_path('CC', r'C:\Users\liuyalong\Desktop\test\abcd\apps\ab.py')
+    cc = load_cls_from_module(aa)
+    from easyrequest.request.spider import CrawlSpider
+
+    for i in cc:
+        bb = CrawlSpider.from_spider(i)
+
+        print(bb.start_urls)

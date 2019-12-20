@@ -20,6 +20,5 @@ def overridden_settings(settings):
     for name, dft_value in iter_default_settings():
         value = settings[name]
         if value != dft_value and value is not None:
-            yield name, value
-        else:
-            yield name, dft_value
+            settings.update(name, value)
+    return settings
