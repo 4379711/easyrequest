@@ -7,31 +7,30 @@ from . import default_settings
 
 class Settings:
     def __init__(self, setting):
-        self.attribute = {}
         self.update_by_mod(setting)
 
     def __getitem__(self, item):
-        if item not in self.attribute:
+        if item not in self.__dict__:
             return None
-        return self.attribute[item]
+        return self.__dict__[item]
 
     def update_by_mod(self, mod):
         self._check_mod(mod)
         for attr in dir(mod):
             if attr.isupper():
-                self.attribute[attr] = getattr(mod, attr)
+                self.__dict__[attr] = getattr(mod, attr)
 
     def update(self, name, value):
-        self.attribute[name] = value
+        self.__dict__[name] = value
 
     def __setitem__(self, name, value):
         if name.isupper():
-            self.attribute[name] = value
+            self.__dict__[name] = value
         else:
             raise ValueError(f'Can not set {name} ,use {name.upper()} instead !')
 
     def __contains__(self, name):
-        return name in self.attribute.keys()
+        return name in self.__dict__.keys()
 
     @staticmethod
     def _check_mod(mod):

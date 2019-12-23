@@ -56,7 +56,7 @@ def load_module_from_path(name, location):
 def load_cls_from_module(mod, sub_class=object):
     for obj in vars(mod).values():
         if inspect.isclass(obj) and \
-                obj.__module__ == aa.__name__ and \
+                obj.__module__ == mod.__name__ and \
                 issubclass(obj, sub_class):
             yield obj
 

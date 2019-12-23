@@ -21,4 +21,6 @@ def overridden_settings(settings):
         value = settings[name]
         if value != dft_value and value is not None:
             settings.update(name, value)
+        elif value is None:
+            settings.update(name, dft_value)
     return settings

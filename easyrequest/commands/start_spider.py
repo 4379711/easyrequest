@@ -8,7 +8,7 @@ import re
 import os
 from os.path import join, exists
 
-from easyrequest.entrance.spider_runner import SpiderRunner
+from easyrequest.engine import SpiderEngine
 from easyrequest.error import LoadError
 from easyrequest.request.spider import CrawlSpider
 from easyrequest.settings.load_settings import overridden_settings
@@ -59,9 +59,9 @@ class CommandStartSpider:
         if not spclasses:
             raise LoadError(spider_name)
         spider_cls = spclasses.pop()
+
         # set spider config
         spider_cls.settings = settings
 
-        runner = SpiderRunner(spider_cls)
-        spider = runner.load_spider()
-        print(spider.start_urls)
+        engine = SpiderEngine(spider_cls)
+        engine.create()
