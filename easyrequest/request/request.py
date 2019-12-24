@@ -7,15 +7,14 @@ from requests import api
 
 class Request:
 
-    def __init__(self,  encoding='utf-8', method='GET', data_pass=None, **kwargs):
+    def __init__(self, method='GET', data_pass=None, **kwargs):
         self.method = method
         self.kwargs = kwargs
-        self.encoding = encoding
-        self.datapass = data_pass
+        self.data_pass = data_pass
 
     def request(self, url):
         resp = api.request(method=self.method, url=url, **self.kwargs)
-        resp.data_pass = self.datapass
+        resp.data_pass = self.data_pass
         return resp
 
     @staticmethod

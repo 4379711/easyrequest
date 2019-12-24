@@ -42,10 +42,24 @@ class CommandSpider:
         if exists(join(cmd_path, 'apps', spider_file_name)):
             print(f'\033[32mError: Spider "{spider_name}" already exists \033[0m')
             return
+
+        items_name = f'{spider_name}_items'
+        # create spider file
         src_name = join(self.templates_file, 'spider.py.template')
         dst_name = join(abspath(cmd_path), 'apps', f'{spider_name}.py.template')
         copyfile(src_name, dst_name)
-        render_template_file(dst_name, classname=string_camelcase(spider_name))
+        render_template_file(dst_name,
+                             classname=string_camelcase(spider_name),
+                             itemname=items_name,
+                             itemclassname=string_camelcase(items_name)
+                             )
+
+        # create items file
+        src_name = join(self.templates_file, 'items.py.template')
+
+        dst_name = join(abspath(cmd_path), 'models', f'{items_name}.py.template')
+        copyfile(src_name, dst_name)
+        render_template_file(dst_name, classname=string_camelcase(items_name))
 
         print("\033[32mCreate Spider '%s finished in:' " % spider_file_name)
         print("    %s\033[0m" % join(abspath(cmd_path), 'apps', spider_file_name))

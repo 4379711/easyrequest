@@ -13,7 +13,7 @@ from .start_spider import CommandStartSpider
 @click.argument('project_name')
 def create_project_(project_name):
     """
-    Create Project
+    Create a spider project
     """
     CommandProject().run(project_name)
 
@@ -22,7 +22,7 @@ def create_project_(project_name):
 @click.argument('spider_name')
 def create_spider_(spider_name):
     """
-    Create Spider
+    Create a Spider for project ,must create project before
     """
     CommandSpider().run(spider_name)
 
@@ -31,7 +31,7 @@ def create_spider_(spider_name):
 @click.argument('spider_name')
 def run_spider_(spider_name):
     """
-    Run Spider
+    Run Spider to get data
     """
     CommandStartSpider().run(spider_name)
 

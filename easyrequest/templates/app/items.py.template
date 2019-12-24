@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+from easyrequest.items import *
+
+
+class >>classname:
+    # write your model here
+    # parameter name must be different if you use a type filed twice more
+
+    str_filed = StringFiled(name='filed1')
+    int_filed = IntFiled(name='filed2')
+    dict_filed = DictFiled(name='filed3')
+    other_filed = Filed(name='filed4')
+
