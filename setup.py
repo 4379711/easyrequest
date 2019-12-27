@@ -47,7 +47,8 @@ setup(
     install_requires=['colorama',
                       'click',
                       'requests',
-                      'gevent'
+                      'gevent',
+                      'lxml'
                       ],
     include_package_data=True
 )

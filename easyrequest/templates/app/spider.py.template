@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from easyrequest import CrawlSpider, Request
+from easyrequest import CrawlSpider, Request, Parser
 from models.>>itemname import >>itemclassname
 
 
@@ -16,6 +16,9 @@ class >>classname(CrawlSpider):
     def parse_response(self, response):
         response.encoding = response.apparent_encoding  # set response encoding
         # start parse your response and save in items
+        html = response.text
+        parser = Parser(html)
+        parser.xpath('')
 
         # put data into items
         item = >>itemclassname()

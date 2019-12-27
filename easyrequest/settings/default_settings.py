@@ -4,9 +4,6 @@
 # @File    : default_settings.py
 
 
-# write your spider name here which you want to run
-SPIDERS = []
-
 # Change user-agent auto
 AUTO_USER_AGENT = True
 

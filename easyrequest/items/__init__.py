@@ -11,3 +11,11 @@ from .fileds import (
     DictListFiled,
     Filed
 )
+
+from abc import abstractmethod
+
+
+class Items:
+    @abstractmethod
+    def save(self, items):
+        pass

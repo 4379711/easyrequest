@@ -12,7 +12,7 @@ from easyrequest.utils.template import render_template_file, string_camelcase
 
 import easyrequest
 
-must_exists = {'settings.py', 'manage.py', 'apps'}
+must_exists = {'settings.py', 'manage.py', 'Models', 'Apps', 'DataPersistence'}
 
 
 class CommandSpider:
@@ -57,12 +57,21 @@ class CommandSpider:
         # create items file
         src_name = join(self.templates_file, 'items.py.template')
 
-        dst_name = join(abspath(cmd_path), 'models', f'{items_name}.py.template')
+        dst_name = join(abspath(cmd_path), 'Models', f'{items_name}.py.template')
         copyfile(src_name, dst_name)
         render_template_file(dst_name, classname=string_camelcase(items_name))
 
-        print("\033[32mCreate Spider '%s finished in:' " % spider_file_name)
-        print("    %s\033[0m" % join(abspath(cmd_path), 'apps', spider_file_name))
+        # create data persistence file
+        data_persistence_name = f'{spider_name}_data_persistence'
+
+        src_name = join(self.templates_file, 'data_persistence.py.template')
+
+        dst_name = join(abspath(cmd_path), 'DataPersistence', f'{data_persistence_name}.py.template')
+        copyfile(src_name, dst_name)
+        render_template_file(dst_name, classname=string_camelcase(data_persistence_name))
+
+        print("\033[32mCreate Spider '%s finished in:' " % spider_name)
+        print("    %s\033[0m" % abspath(cmd_path))
 
     @property
     def templates_file(self):

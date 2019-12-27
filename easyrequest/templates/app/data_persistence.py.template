@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+from easyrequest import Items
+
+
+class >>classname(Items):
+
+    # clean data if necessary
+    def clean(self, item):
+        return
+
+    # save data
+    def save(self, items):
+        pass
+

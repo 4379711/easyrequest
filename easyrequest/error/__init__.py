@@ -9,7 +9,7 @@ class LoadError(Exception):
         self.name = name
 
     def __str__(self):
-        return 'Can not load %s' % self.name
+        return 'Can not load %s ,Check spider file <Apps.xxx.py , Models.xxxItems.py> is correct !' % self.name
 
     __repr__ = __str__
 

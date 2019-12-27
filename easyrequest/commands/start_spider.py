@@ -10,6 +10,7 @@ from os.path import join, exists
 
 from easyrequest.engine import SpiderEngine
 from easyrequest.error import LoadError
+from easyrequest.items import Items
 from easyrequest.request.spider import CrawlSpider
 from easyrequest.settings.load_settings import overridden_settings
 from easyrequest.utils.format_print import pprint
@@ -53,15 +54,24 @@ class CommandStartSpider:
         settings = overridden_settings(user_settings_obj)
 
         # load spider cls
-        spider_module = load_module_from_path(spider_name, join(cmd_path, join('apps', spider_file_name)))
+        spider_module = load_module_from_path(spider_name, join(cmd_path, join('Apps', spider_file_name)))
         iter_spider_cls = load_cls_from_module(spider_module, sub_class=CrawlSpider)
         spclasses = list(iter_spider_cls)
-        if not spclasses:
+
+        spider_data_file_name = f'{spider_name}_items.py'
+        # load spider data persistence
+        spider_data_module = load_module_from_path(spider_name,
+                                                   join(cmd_path, join('DataPersistence', spider_data_file_name)))
+        iter_spider_data_cls = load_cls_from_module(spider_data_module, sub_class=Items)
+        spider_data_cls = list(iter_spider_data_cls)
+
+        if not spclasses or not spider_data_cls:
             raise LoadError(spider_name)
         spider_cls = spclasses.pop()
-
         # set spider config
         spider_cls.settings = settings
 
-        engine = SpiderEngine(spider_cls)
+        spider_data_cls = spider_data_cls.pop()
+
+        engine = SpiderEngine(spider_cls, spider_data_cls)
         engine.create()
