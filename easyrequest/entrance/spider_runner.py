@@ -9,11 +9,15 @@ from easyrequest.error import ReturnTypeError
 class SpiderRunner:
     def __init__(self, spider_cls, data_cls):
         self.spider_cls = spider_cls
-        self.spider = self.load_spider()
-
         self.data_cls = data_cls
+        self.spider = self._load_spider()
+        self.data_persistence = self._load_data_persistence()
 
-    def load_spider(self):
+    def _load_data_persistence(self):
+        data_persistence = self.data_cls.from_spider()
+        return data_persistence
+
+    def _load_spider(self):
         spider = self.spider_cls.from_spider(self.spider_cls)
         return spider
 
@@ -31,7 +35,7 @@ class SpiderRunner:
         item = self.spider.parse_response(resp)
 
         # save data
-        self.data_cls.save(item)
+        self.data_persistence.save(item)
 
         # if resp
         # def deal_callback(resp_=resp):

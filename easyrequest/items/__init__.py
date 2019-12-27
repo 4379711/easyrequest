@@ -19,3 +19,8 @@ class Items:
     @abstractmethod
     def save(self, items):
         pass
+
+    @classmethod
+    def from_spider(cls):
+        spider = cls()
+        return spider

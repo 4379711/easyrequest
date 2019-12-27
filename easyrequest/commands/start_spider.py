@@ -7,6 +7,7 @@ from __future__ import print_function
 import re
 import os
 from os.path import join, exists
+import sys
 
 from easyrequest.engine import SpiderEngine
 from easyrequest.error import LoadError
@@ -35,6 +36,7 @@ class CommandStartSpider:
             return
 
         cmd_path = os.getcwd()
+        sys.path.insert(0, cmd_path)
 
         spider_file_name = f'{spider_name}.py'
 
@@ -58,7 +60,7 @@ class CommandStartSpider:
         iter_spider_cls = load_cls_from_module(spider_module, sub_class=CrawlSpider)
         spclasses = list(iter_spider_cls)
 
-        spider_data_file_name = f'{spider_name}_items.py'
+        spider_data_file_name = f'{spider_name}_data_persistence.py'
         # load spider data persistence
         spider_data_module = load_module_from_path(spider_name,
                                                    join(cmd_path, join('DataPersistence', spider_data_file_name)))
