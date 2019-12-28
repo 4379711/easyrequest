@@ -30,6 +30,15 @@ DEFAULT_REQUEST_HEADERS = {
     'Accept-Language': 'en',
 }
 
+LOG_CONFIG = {
+    'LOG_PATH': 'logs',
+    'DEBUG': True,
+    'INFO': True,
+    'WARNING': True,
+    'ERROR': True,
+    'INTERVAL': 7
+}
+
 # spider middlewares
 # SPIDER_MIDDLEWARES = {
 #    'aioo.middlewares.AiooSpiderMiddleware': 543,

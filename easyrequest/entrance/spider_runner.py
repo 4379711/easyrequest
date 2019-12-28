@@ -4,8 +4,10 @@
 # @File    : spider_runner.py
 import time
 
-from easyrequest import Request
-from easyrequest.error import ReturnTypeError, RetryError
+from easyrequest import Request, logger
+
+
+# from easyrequest.error import ReturnTypeError, RetryError
 
 
 class SpiderRunner:
@@ -31,14 +33,21 @@ class SpiderRunner:
         return default
 
     def start(self, url, retry_times=0, e=None):
-        print(f'开始第{retry_times}次请求{url}\n\n')
+        logger.info('start request url <%s>' % url)
         request_instance = self.spider.run()
         if not isinstance(request_instance, Request):
-            raise ReturnTypeError(Request)
+            logger.error('Return Type must be Request in run() ')
+            return 0
+            # raise ReturnTypeError(Request)
+
+        logger.debug('start request of url <%s>' % url)
+        if 0 < retry_times <= self.spider.settings.RETRY_TIMES:
+            logger.warning(f'Coming request <retry_times: {retry_times}>')
 
         if retry_times > self.spider.settings.RETRY_TIMES:
-            raise RetryError(retry_times - 1, url, e)
-
+            logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
+            # raise RetryError(retry_times - 1, url, e)
+            return 0
         retry_times += 1
         default_config = self._config_request_instance()
 
@@ -49,13 +58,25 @@ class SpiderRunner:
         except Exception as e:
             return self.start(url, retry_times, e)
 
-        item = self.spider.parse_response(resp)
+        logger.debug('start parse_response of url <%s>' % url)
+        try:
+            item = self.spider.parse_response(resp)
+        except Exception as e:
+            logger.error(f'ParseResponse failed !\n\t\t {e}\n\n')
+            return 0
 
         # save data
-        self.data_persistence.save(item)
+        logger.debug('start save data of url <%s>' % url)
 
+        try:
+            self.data_persistence.save(item)
+        except Exception as e:
+            logger.error(f'save data failed !\n\t\t {e}\n\n')
+            return 0
+        logger.info('request successful of url <%s>' % url)
         time.sleep(self.spider.settings.REQUEST_DELAY)
 
         need_delay_time = self.spider.settings.PER_REQUEST_MIN_TIME
         if time.time() - start_time < need_delay_time:
             time.sleep(time.time() - start_time)
+        return 1

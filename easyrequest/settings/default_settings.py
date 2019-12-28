@@ -37,3 +37,11 @@ DEFAULT_REQUEST_HEADERS = {
 #    'aioo.middlewares.AiooSpiderMiddleware': 543,
 # }
 
+LOG_CONFIG = {
+    'LOG_PATH': 'logs',
+    'DEBUG': True,
+    'INFO': True,
+    'WARNING': True,
+    'ERROR': True,
+    'INTERVAL': 7
+}
