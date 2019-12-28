@@ -24,16 +24,18 @@ def run_spider_name(name):
                     stdin=PIPE,
                     stderr=PIPE,
                     stdout=None)
-    while True:
-        time.sleep(1)
-        pid = process.pid
-        logger.info(f'子进程pid:{pid}')
-        if process.poll() is not None:
-            logger.info(f'子进程启动失败')
-        _, b = process.communicate()
-        if b:
-            logger.error(f'子进程发生错误')
-        logger.info(f'定时器关闭任务{name}')
+    process.wait()
+    logger.info(f'定时器关闭任务{name}')
+    # while True:
+    #     time.sleep(1)
+    #     pid = process.pid
+    #     logger.info(f'子进程pid:{pid}')
+    #     if process.poll() is not None:
+    #         logger.info(f'子进程启动失败')
+    #     _, b = process.communicate()
+    #     if b:
+    #         logger.error(f'子进程发生错误')
+    #     logger.info(f'定时器关闭任务{name}')
 
 
 def load_tasks():
