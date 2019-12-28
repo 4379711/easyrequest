@@ -11,7 +11,7 @@ CONCURRENT_REQUESTS = 10
 DEFAULT_REQUEST_TIMEOUT = 300
 
 # Either a boolean, in which case it controls whether we verify the server's TLS certificate
-# or a string, in which case it must be a path to a CA bundle to use.
+# OR a string, in which case it must be a path to a CA bundle to use.
 DEFAULT_REQUEST_VERIFY = False
 
 # Configure a delay seconds for requests(default: 0)
@@ -26,17 +26,21 @@ RETRY_TIMES = 3
 # Limit each request time
 PER_REQUEST_MIN_TIME = 3
 
-# Override the default request headers:
+# Default request headers
 DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'en',
 }
 
-# spider middlewares
+# Spider middlewares
 # SPIDER_MIDDLEWARES = {
 #    'aioo.middlewares.AiooSpiderMiddleware': 543,
 # }
 
+# Configure log
+# LOG_PATH : Path(relative path) where to save
+# DEBUG    : Whether open DEBUG MODE
+# INTERVAL : How often unpack logs
 LOG_CONFIG = {
     'LOG_PATH': 'logs',
     'DEBUG': True,
@@ -45,3 +49,12 @@ LOG_CONFIG = {
     'ERROR': True,
     'INTERVAL': 7
 }
+
+# TIMER TASK config
+TIMER_TASK = [
+    {'SpiderName': '',
+     'every': 1,
+     'unit': 'days.at("10:00")',  # <at> can not use in ( seconds ,minutes ,hour...)
+     # 'unit': 'seconds'
+     },
+]

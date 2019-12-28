@@ -42,7 +42,7 @@ class SpiderRunner:
 
         logger.debug('start request of url <%s>' % url)
         if 0 < retry_times <= self.spider.settings.RETRY_TIMES:
-            logger.warning(f'Coming request <retry_times: {retry_times}>')
+            logger.warning(f'Retry <{retry_times}> : request of url <{url}>')
 
         if retry_times > self.spider.settings.RETRY_TIMES:
             logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
@@ -62,7 +62,7 @@ class SpiderRunner:
         try:
             item = self.spider.parse_response(resp)
         except Exception as e:
-            logger.error(f'ParseResponse failed !\n\t\t {e}\n\n')
+            logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
             return 0
 
         # save data

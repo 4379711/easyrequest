@@ -45,3 +45,13 @@ class RetryError(Exception):
         return 'Request <%s> Retry <%d> times still failed ,error:\n\n       %s' % (self.url, self.times, self.err)
 
     __repr__ = __str__
+
+
+class ConfigError(Exception):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return 'Error of %s config in settings' % self.name
+
+    __repr__ = __str__

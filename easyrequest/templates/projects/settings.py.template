@@ -24,12 +24,16 @@ RETRY_TIMES = 3
 # Limit each request time
 PER_REQUEST_MIN_TIME = 3
 
-# Override the default request headers:
+# Default request headers
 DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'en',
 }
 
+# Configure log
+# LOG_PATH : Path(relative path) where to save
+# DEBUG    : Whether open DEBUG MODE
+# INTERVAL : How often unpack logs
 LOG_CONFIG = {
     'LOG_PATH': 'logs',
     'DEBUG': True,
@@ -39,7 +43,17 @@ LOG_CONFIG = {
     'INTERVAL': 7
 }
 
-# spider middlewares
+
+# TIMER TASK config
+TIMER_TASK = [
+    {'SpiderName': '',
+     'every': 1,
+     'unit': 'days.at("10:00")',  # <at> can not use in ( seconds ,minutes ,hour...)
+     # 'unit': 'minutes'
+     },
+]
+
+# Spider middlewares
 # SPIDER_MIDDLEWARES = {
 #    'aioo.middlewares.AiooSpiderMiddleware': 543,
 # }
