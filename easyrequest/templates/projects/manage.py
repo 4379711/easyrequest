@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from easyrequest import schedule, run_spider_name, load_tasks
 import time
+from easyrequest import (
+    schedule,
+    load_tasks,
+    timer_task_by_str,
+    run_spider_name  # can not remove this package
+)
 
-load_tasks()
+for task_str in load_tasks():
+    timer_task_by_str(task_str)
 
-if __name__ == '__main__':
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+while True:
+    schedule.run_pending()
+    time.sleep(1)

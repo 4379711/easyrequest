@@ -4,7 +4,7 @@
 # @File    : run_spider_by_manage.py
 from subprocess import Popen, PIPE
 from easyrequest.utils.log import logger
-
+import time
 from easyrequest.error import ConfigError
 from easyrequest.utils.load_module import load_module_from_path
 import os
@@ -12,7 +12,7 @@ from os.path import join
 import sys
 from easyrequest.settings.load_settings import overridden_settings
 
-__all__ = ['run_spider_name', 'load_tasks']
+__all__ = ['run_spider_name', 'load_tasks', 'timer_task_by_str']
 
 
 def run_spider_name(name):
@@ -25,6 +25,7 @@ def run_spider_name(name):
                     stderr=PIPE,
                     stdout=None)
     while True:
+        time.sleep(1)
         pid = process.pid
         logger.info(f'子进程pid:{pid}')
         if process.poll() is not None:
@@ -45,13 +46,15 @@ def load_tasks():
     # override default config
     settings = overridden_settings(user_settings_obj)
     task_list = settings.TIMER_TASK
-
     for task in task_list:
         name = task.get('SpiderName')
         every = task.get('every')
         unit = task.get('unit')
         if not (name or every or unit):
             raise ConfigError('TIMER_TASK')
+        my_str = f"schedule.every({every}).{unit}.do(run_spider_name, '{name}')"
+        yield my_str
 
-        my_str = f"schedule.every({every}).{unit}.do(run_spider_name, name)"
-        eval(my_str)
+
+def timer_task_by_str(str_):
+    eval(str_)
