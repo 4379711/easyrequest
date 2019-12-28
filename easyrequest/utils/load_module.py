@@ -59,15 +59,3 @@ def load_cls_from_module(mod, sub_class=object):
                 obj.__module__ == mod.__name__ and \
                 issubclass(obj, sub_class):
             yield obj
-
-
-if __name__ == '__main__':
-    # load_object('easyrequest.settings.default_settings')
-    aa = load_module_from_path('CC', r'C:\Users\liuyalong\Desktop\test\abcd\apps\ab.py')
-    cc = load_cls_from_module(aa)
-    from easyrequest.request.spider import CrawlSpider
-
-    for i in cc:
-        bb = CrawlSpider.from_spider(i)
-
-        print(bb.start_urls)

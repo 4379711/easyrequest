@@ -33,3 +33,15 @@ class ParameterError(Exception):
         return '%s parameter must be %s ' % (self.whos.__name__, self.name.__name__)
 
     __repr__ = __str__
+
+
+class RetryError(Exception):
+    def __init__(self, times, url, err):
+        self.url = url
+        self.times = times
+        self.err = err
+
+    def __str__(self):
+        return 'Request <%s> Retry <%d> times still failed ,error:\n\n       %s' % (self.url, self.times, self.err)
+
+    __repr__ = __str__

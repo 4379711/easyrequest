@@ -3,17 +3,25 @@
 # @Author  : Liu Yalong
 # @File    : request.py
 from requests import api
+import urllib3
+
+urllib3.disable_warnings()
 
 
 class Request:
 
-    def __init__(self, method='GET', data_pass=None, **kwargs):
+    def __init__(self, method='GET',
+                 data_pass=None,
+                 **kwargs):
         self.method = method
         self.kwargs = kwargs
         self.data_pass = data_pass
 
-    def request(self, url):
-        resp = api.request(method=self.method, url=url, **self.kwargs)
+    def request(self, url, config):
+        config.update(self.kwargs)
+        resp = api.request(method=self.method,
+                           url=url,
+                           **config)
         resp.data_pass = self.data_pass
         return resp
 

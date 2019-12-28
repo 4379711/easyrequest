@@ -4,17 +4,27 @@
 # @File    : default_settings.py
 
 
-# Change user-agent auto
-AUTO_USER_AGENT = True
-
 # Configure maximum concurrent requests (default: 10)
 CONCURRENT_REQUESTS = 10
 
-# Configure a delay for requests(default: 0)
+# Timeout of per request (default:300 seconds)
+DEFAULT_REQUEST_TIMEOUT = 300
+
+# Either a boolean, in which case it controls whether we verify the server's TLS certificate
+# or a string, in which case it must be a path to a CA bundle to use.
+DEFAULT_REQUEST_VERIFY = False
+
+# Configure a delay seconds for requests(default: 0)
 REQUEST_DELAY = 0
 
 # Disable Console (enabled by default)
 CONSOLE_MESSAGE = True
+
+# Retry times per request when it failed
+RETRY_TIMES = 3
+
+# Limit each request time
+PER_REQUEST_MIN_TIME = 3
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
@@ -22,17 +32,8 @@ DEFAULT_REQUEST_HEADERS = {
     'Accept-Language': 'en',
 }
 
-# Enable or disable spider middlewares
+# spider middlewares
 # SPIDER_MIDDLEWARES = {
 #    'aioo.middlewares.AiooSpiderMiddleware': 543,
 # }
 
-# Enable or disable downloader middlewares
-# DOWNLOADER_MIDDLEWARES = {
-#    'aioo.middlewares.AiooDownloaderMiddleware': 543,
-# }
-
-# Configure item pipelines
-# ITEM_PIPELINES = {
-#    'aioo.pipelines.AiooPipeline': 300,
-# }
