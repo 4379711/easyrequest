@@ -70,6 +70,15 @@ class CommandSpider:
         copyfile(src_name, dst_name)
         render_template_file(dst_name, classname=string_camelcase(data_persistence_name))
 
+        # create middleware file
+        middleware_name = f'{spider_name}_middleware'
+
+        src_name = join(self.templates_file, 'middleware.py.template')
+
+        dst_name = join(abspath(cmd_path), 'Middlewares', f'{middleware_name}.py.template')
+        copyfile(src_name, dst_name)
+        render_template_file(dst_name, classname=string_camelcase(spider_name))
+
         print("\033[32mCreate Spider '%s finished in:' " % spider_name)
         print("    %s\033[0m" % abspath(cmd_path))
 

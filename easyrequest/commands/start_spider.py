@@ -2,8 +2,6 @@
 # @Time    : 2019/12/10 16:54
 # @Author  : Liu Yalong
 # @File    : start_spider.py
-from __future__ import print_function
-
 import re
 import os
 from os.path import join, exists
@@ -67,8 +65,17 @@ class CommandStartSpider:
         iter_spider_data_cls = load_cls_from_module(spider_data_module, sub_class=Items)
         spider_data_cls = list(iter_spider_data_cls)
 
-        if not spclasses or not spider_data_cls:
+        # ############
+        spider_middleware_name = f'{spider_name}_middleware.py'
+        # load spider middleware
+        spider_middleware_module = load_module_from_path(spider_name,
+                                                         join(cmd_path, join('Middlewares', spider_middleware_name)))
+        iter_middleware_cls = load_cls_from_module(spider_middleware_module, sub_class=Items)
+        spider_middleware_cls = list(iter_middleware_cls)
+
+        if not spclasses or not spider_data_cls or not spider_middleware_cls:
             raise LoadError(spider_name)
+
         spider_cls = spclasses.pop()
         # set spider config
         spider_cls.settings = settings

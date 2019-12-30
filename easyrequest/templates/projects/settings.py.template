@@ -55,5 +55,5 @@ TIMER_TASK = [
 
 # Spider middlewares
 # SPIDER_MIDDLEWARES = {
-#    'aioo.middlewares.AiooSpiderMiddleware': 543,
+#    '>>{project_name}.Middlewares.SpiderMiddleware': 543,
 # }

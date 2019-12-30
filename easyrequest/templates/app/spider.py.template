@@ -27,4 +27,4 @@ class >>classname(CrawlSpider):
         item.str_filed = 'xxx'
         item.int_filed = 123
 
-        return item
+        yield item

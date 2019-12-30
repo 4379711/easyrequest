@@ -48,7 +48,8 @@ setup(
                       'click',
                       'requests',
                       'gevent',
-                      'lxml', 'urllib3'
+                      'lxml',
+                      'urllib3'
                       ],
     include_package_data=True
 )
