@@ -12,10 +12,11 @@ from easyrequest.entrance.spider_runner import SpiderRunner
 
 
 class SpiderEngine:
-    def __init__(self, spider, spider_data):
+    def __init__(self, spider, spider_data, mid_cls):
         self.spider = spider
         self.setting = spider.settings
         self.spider_data = spider_data
+        self.mid_cls = mid_cls
 
     def load_config(self):
         setting = self.spider.settings
@@ -23,6 +24,6 @@ class SpiderEngine:
 
     def create(self):
         pool = Pool(size=self.setting.CONCURRENT_REQUESTS)
-        runner = SpiderRunner(self.spider, self.spider_data)
+        runner = SpiderRunner(self.spider, self.spider_data, self.mid_cls)
 
         gevent.joinall([pool.spawn(runner.start, url) for url in self.spider.start_urls])

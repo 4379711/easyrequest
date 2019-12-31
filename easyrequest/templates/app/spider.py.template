@@ -20,11 +20,11 @@ class >>classname(CrawlSpider):
         # start parse your response and save in items
         html = response.text
         parser = Parser(html)
-        parser.by_xpath('')
+        data_list = parser.by_xpath('')
 
         # put data into items
         item = >>itemclassname()
         item.str_filed = 'xxx'
         item.int_filed = 123
 
-        yield item
+        return item

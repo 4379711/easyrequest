@@ -7,6 +7,8 @@ import os
 from os.path import join, exists
 import sys
 
+from easyrequest.middlewares import BaseMiddleWares
+
 from easyrequest.engine import SpiderEngine
 from easyrequest.error import LoadError
 from easyrequest.items import Items
@@ -70,10 +72,11 @@ class CommandStartSpider:
         # load spider middleware
         spider_middleware_module = load_module_from_path(spider_name,
                                                          join(cmd_path, join('Middlewares', spider_middleware_name)))
-        iter_middleware_cls = load_cls_from_module(spider_middleware_module, sub_class=Items)
-        spider_middleware_cls = list(iter_middleware_cls)
 
-        if not spclasses or not spider_data_cls or not spider_middleware_cls:
+        iter_middleware_cls = load_cls_from_module(spider_middleware_module, sub_class=BaseMiddleWares)
+        spider_middleware_cls_list = list(iter_middleware_cls)
+
+        if not spclasses or not spider_data_cls or not spider_middleware_cls_list:
             raise LoadError(spider_name)
 
         spider_cls = spclasses.pop()
@@ -82,5 +85,5 @@ class CommandStartSpider:
 
         spider_data_cls = spider_data_cls.pop()
 
-        engine = SpiderEngine(spider_cls, spider_data_cls)
+        engine = SpiderEngine(spider_cls, spider_data_cls, spider_middleware_cls_list)
         engine.create()

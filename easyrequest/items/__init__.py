@@ -12,10 +12,10 @@ from .fileds import (
     Filed
 )
 
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 
-class Items:
+class Items(ABC):
     @abstractmethod
     def save(self, items):
         pass

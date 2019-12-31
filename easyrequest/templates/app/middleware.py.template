@@ -2,34 +2,44 @@
 # @Time    : 2019/12/30 17:09
 # @Author  : Liu Yalong
 # @File    : middlewares.py
-from easyrequest.middlewares import MiddleWares
+from easyrequest.middlewares import RequestMiddleWares, ParserMiddleWares
 
 
-class >>{classname}RequestMiddleWare(MiddleWares):
-    # write your request middlewares for a spider here
+class >>{classname}RequestMiddleWare(RequestMiddleWares):
+    # write your request middleware for a spider here
+    # Not all methods need to be defined.
 
-    def before(self):
+    def before(self, url, params):
+        # Called before request each url
+
         pass
 
-    def end(self):
+    def after(self, url):
+        # Called after request each url
+
+        pass
+
+    def exception(self, error, url, params):
+        # Called exception occurred when request each url
+
         pass
 
 
-class >>{classname}DownLoadsMiddleWare(MiddleWares):
-    # write your downloads middlewares for a spider here
+class >>{classname}ParserMiddleWare(ParserMiddleWares):
+    # write your Parser middleware for a spider here
+    # Not all methods need to be defined.
 
-    def before(self):
+    def before(self, resp):
+        # Called before parse each response
+
         pass
 
-    def end(self):
+    def after(self, resp):
+        # Called after parse each response
+
         pass
 
+    def exception(self, error, resp):
+        # Called exception occurred when parse each response
 
-class >>{classname}ErrorMiddleWare(MiddleWares):
-    # write your error middlewares for a spider here
-
-    def before(self):
-        pass
-
-    def end(self):
         pass

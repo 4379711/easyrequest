@@ -7,13 +7,12 @@ from inspect import isgeneratorfunction
 from easyrequest import Request
 from easyrequest.utils.log import logger
 
-# from easyrequest.error import ReturnTypeError, RetryError
-
 
 class SpiderRunner:
-    def __init__(self, spider_cls, data_cls):
+    def __init__(self, spider_cls, data_cls, mid_cls_list):
         self.spider_cls = spider_cls
         self.data_cls = data_cls
+        self.mid_cls_list = mid_cls_list
         self.spider = self._load_spider()
         self.data_persistence = self._load_data_persistence()
 
@@ -25,6 +24,11 @@ class SpiderRunner:
         spider = self.spider_cls.from_spider(self.spider_cls)
         return spider
 
+    def _load_middleware(self, name):
+        for mid_cls in self.mid_cls_list:
+            if name in mid_cls.__name__:
+                return mid_cls
+
     def _config_request_instance(self):
         # Request configs overwrite settings
         default = {}
@@ -33,54 +37,78 @@ class SpiderRunner:
         return default
 
     def start(self, url, retry_times=0, e=None):
-        logger.info('start request url <%s>' % url)
+        try:
+            middleware_request = self._load_middleware('RequestMiddleWare')
+            middleware_parse = self._load_middleware('ParserMiddleWare')
+        except Exception:
+            print('\033[32mCan not load middleware !\033[0m')
+            logger.error('Can not load middleware !')
+            return 0
+
+        # create a spider Request instance
         request_instance = self.spider.run()
         if not isinstance(request_instance, Request):
-            logger.error('Return Type must be Request in run() ')
+            print('\033[32mReturn Type must be Request in run() !\033[0m')
+            logger.error('Return Type must be Request in run() !')
             return 0
-            # raise ReturnTypeError(Request)
 
         if 0 < retry_times <= self.spider.settings.RETRY_TIMES:
             logger.warning(f'Retry <{retry_times}> : request of url <{url}>')
 
         if retry_times > self.spider.settings.RETRY_TIMES:
             logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
-            # raise RetryError(retry_times - 1, url, e)
             return 0
 
         retry_times += 1
         default_config = self._config_request_instance()
 
         start_time = time.time()
+        logger.info('start request url <%s>' % url)
         logger.debug('start request of url <%s>' % url)
+
         try:
-            # start request http://www.xxx.com
-            resp = request_instance.request(url=url, config=default_config)
+            if middleware_request:
+                resp = middleware_request(request_instance.request)(url, default_config)
+            else:
+                resp = request_instance.request(url, default_config)
         except Exception as e:
             return self.start(url, retry_times, e)
 
         logger.debug('start parse_response of url <%s>' % url)
 
-        if not isgeneratorfunction(self.spider.parse_response):
+        if isgeneratorfunction(self.spider.parse_response):
+            # if return a generator , can not catch exception in middleware
 
-            try:
-                item = self.spider.parse_response(resp)
-            except Exception as e:
-                logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
-                return 0
+            print('\033[32mparse_response can not be generator !\033[0m')
+            logger.error('parse_response can not be generator !')
+            return 0
 
-            # save data
-            logger.debug('start save data of url <%s>' % url)
-
-            try:
-                self.data_persistence.save(item)
-            except Exception as e:
-                logger.error(f'save data failed !\n\t\t {e}\n\n')
-                return 0
+            # try:
+            #     if middleware_parse:
+            #         item = middleware_parse.from_spider(self.spider.parse_response)(resp)
+            #     else:
+            #         item = self.spider.parse_response(resp)
+            # except Exception as e:
+            #     logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
+            #     return 0
+            #
+            # # save data
+            # logger.debug('start save data of url <%s>' % url)
+            #
+            # try:
+            #     self.data_persistence.save(item)
+            # except Exception as e:
+            #     logger.error(f'save data failed !\n\t\t {e}\n\n')
+            #     return 0
 
         else:
             try:
-                for item in self.spider.parse_response(resp):
+                if middleware_parse:
+                    func_ = middleware_parse.from_spider(self.spider.parse_response)
+                else:
+                    func_ = self.spider.parse_response
+
+                for item in func_(resp):
                     # save data
                     logger.debug('start save data of url <%s>' % url)
 
@@ -88,13 +116,12 @@ class SpiderRunner:
                         self.data_persistence.save(item)
                     except Exception as e:
                         logger.error(f'save data failed !\n\t\t {e}\n\n')
-                        # return 0
 
             except Exception as e:
                 logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
                 return 0
 
-        logger.info('request <%s> over' % url)
+        logger.info('request <%s> finish' % url)
 
         time.sleep(self.spider.settings.REQUEST_DELAY)
 
