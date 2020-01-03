@@ -17,9 +17,6 @@ DEFAULT_REQUEST_VERIFY = False
 # Configure a delay seconds for requests(default: 0)
 REQUEST_DELAY = 0
 
-# Disable Console (enabled by default)
-CONSOLE_MESSAGE = True
-
 # Retry times per request when it failed
 RETRY_TIMES = 3
 
@@ -31,11 +28,6 @@ DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'en',
 }
-
-# Spider middlewares
-# SPIDER_MIDDLEWARES = {
-#    'aioo.middlewares.AiooSpiderMiddleware': 543,
-# }
 
 # Configure log
 # LOG_PATH : Path(relative path) where to save

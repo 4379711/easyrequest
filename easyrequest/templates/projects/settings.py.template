@@ -15,8 +15,6 @@ DEFAULT_REQUEST_VERIFY = False
 # Configure a delay seconds for requests(default: 0)
 REQUEST_DELAY = 0
 
-# Disable Console (enabled by default)
-CONSOLE_MESSAGE = True
 
 # Retry times per request when it failed
 RETRY_TIMES = 3
@@ -52,7 +50,3 @@ TIMER_TASK = [
      # 'unit': 'minutes'
      },
 ]
-
-# Spider middlewares ,replace xxx to your spider name
-# REQUEST_MIDDLEWARE = '>>{project_name}.Middlewares.xxx_middleware.xxxRequestMiddleWare',
-# PARSER_MIDDLEWARE = '>>{project_name}.Middlewares.xxx_middleware.xxxParserMiddleWare',

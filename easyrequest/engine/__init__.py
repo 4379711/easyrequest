@@ -14,7 +14,6 @@ class SpiderEngine:
     def __init__(self, spider, spider_data, mid_cls):
         self.spider = spider
         self.setting = spider.settings
-        self.spider_name = spider.spider_name
         self.spider_data = spider_data
         self.mid_cls = mid_cls
 

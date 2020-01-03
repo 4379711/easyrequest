@@ -67,10 +67,7 @@ class SpiderRunner:
         logger.debug('start request of url <%s>' % url)
 
         try:
-            if middleware_request:
-                resp = middleware_request(request_instance.request)(url, default_config)
-            else:
-                resp = request_instance.request(url, default_config)
+            resp = middleware_request(request_instance.request)(url, default_config)
         except Exception as e:
             return self.start(url, retry_times, e)
 
