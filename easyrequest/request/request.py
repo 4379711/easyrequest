@@ -3,9 +3,6 @@
 # @Author  : Liu Yalong
 # @File    : request.py
 from requests import api
-import urllib3
-
-urllib3.disable_warnings()
 
 
 class Request:

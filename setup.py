@@ -49,7 +49,7 @@ setup(
                       'requests',
                       'gevent',
                       'lxml',
-                      'urllib3'
+                      'psutil'
                       ],
     include_package_data=True
 )

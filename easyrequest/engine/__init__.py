@@ -3,18 +3,18 @@
 # @Author  : Liu Yalong
 # @File    : __init__.py.py
 from gevent import monkey
+from easyrequest.entrance.spider_runner import SpiderRunner
 
 monkey.patch_socket()
 import gevent
 from gevent.pool import Pool
-
-from easyrequest.entrance.spider_runner import SpiderRunner
 
 
 class SpiderEngine:
     def __init__(self, spider, spider_data, mid_cls):
         self.spider = spider
         self.setting = spider.settings
+        self.spider_name = spider.spider_name
         self.spider_data = spider_data
         self.mid_cls = mid_cls
 

@@ -76,50 +76,44 @@ class SpiderRunner:
 
         logger.debug('start parse_response of url <%s>' % url)
 
-        if isgeneratorfunction(self.spider.parse_response):
+        if not isgeneratorfunction(self.spider.parse_response):
+
+            try:
+                item = middleware_parse.from_spider(self.spider.parse_response)(resp)
+            except Exception as e:
+                logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
+                return 0
+
+            # save data
+            logger.debug('start save data of url <%s>' % url)
+
+            try:
+                self.data_persistence.save(item)
+            except Exception as e:
+                logger.error(f'save data failed !\n\t\t {e}\n\n')
+                return 0
+
+        else:
             # if return a generator , can not catch exception in middleware
 
             print('\033[32mparse_response can not be generator !\033[0m')
             logger.error('parse_response can not be generator !')
             return 0
-
             # try:
-            #     if middleware_parse:
-            #         item = middleware_parse.from_spider(self.spider.parse_response)(resp)
-            #     else:
-            #         item = self.spider.parse_response(resp)
+            #     func_ = middleware_parse.from_spider(self.spider.parse_response)
+            #
+            #     for item in func_(resp):
+            #         # save data
+            #         logger.debug('start save data of url <%s>' % url)
+            #
+            #         try:
+            #             self.data_persistence.save(item)
+            #         except Exception as e:
+            #             logger.error(f'save data failed !\n\t\t {e}\n\n')
+            #
             # except Exception as e:
             #     logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
             #     return 0
-            #
-            # # save data
-            # logger.debug('start save data of url <%s>' % url)
-            #
-            # try:
-            #     self.data_persistence.save(item)
-            # except Exception as e:
-            #     logger.error(f'save data failed !\n\t\t {e}\n\n')
-            #     return 0
-
-        else:
-            try:
-                if middleware_parse:
-                    func_ = middleware_parse.from_spider(self.spider.parse_response)
-                else:
-                    func_ = self.spider.parse_response
-
-                for item in func_(resp):
-                    # save data
-                    logger.debug('start save data of url <%s>' % url)
-
-                    try:
-                        self.data_persistence.save(item)
-                    except Exception as e:
-                        logger.error(f'save data failed !\n\t\t {e}\n\n')
-
-            except Exception as e:
-                logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
-                return 0
 
         logger.info('request <%s> finish' % url)
 

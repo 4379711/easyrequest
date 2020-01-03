@@ -82,6 +82,7 @@ class CommandStartSpider:
         spider_cls = spclasses.pop()
         # set spider config
         spider_cls.settings = settings
+        spider_cls.spider_name = spider_name
 
         spider_data_cls = spider_data_cls.pop()
 

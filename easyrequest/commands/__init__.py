@@ -2,10 +2,15 @@
 # @Time    : 2019/11/12 13:41
 # @Author  : Liu Yalong
 # @File    : __init__.py.py
+from os.path import exists
+from subprocess import Popen, PIPE
 import click
+import psutil
+
 from .cerate_project import CommandProject
 from .create_spider import CommandSpider
 from .start_spider import CommandStartSpider
+import os
 
 
 @click.command(name='CreateProject')
@@ -33,7 +38,46 @@ def run_spider_(spider_name):
     """
     Run Spider to get data
     """
+    pid = os.getpid()
+    to_write_file = str(spider_name) + '.pid'
+    with open(to_write_file, 'w', encoding='utf-8') as f:
+        f.write(str(pid))
+        f.flush()
     CommandStartSpider().run(spider_name)
+
+
+@click.command(name='StopSpider')
+@click.argument('spider_name')
+def stop_spider_(spider_name):
+    """
+    Stop a Spider
+    """
+    to_read_file = str(spider_name) + '.pid'
+    if not exists(to_read_file):
+        print('spider maybe not running')
+        return
+    with open(to_read_file, 'r', encoding='utf-8') as f:
+        pid = int(f.readline())
+        pid_list = psutil.pids()
+        if pid not in pid_list:
+            print('spider maybe not running')
+
+    os.remove(to_read_file)
+    command = f'taskkill /pid {pid} -f'
+
+    pp = Popen(command,
+               shell=True,
+               universal_newlines=True,
+               stdin=PIPE,
+               stderr=PIPE,
+               stdout=PIPE)
+    pp.communicate()
+
+    pid_list = psutil.pids()
+    if int(pid) not in pid_list:
+        print('stop spider successful')
+    else:
+        print('stop spider failed')
 
 
 # 分组功能，将多个命令分组
@@ -46,6 +90,7 @@ def base_command():
 base_command.add_command(create_project_)
 base_command.add_command(create_spider_)
 base_command.add_command(run_spider_)
+base_command.add_command(stop_spider_)
 
 if __name__ == '__main__':
     base_command()

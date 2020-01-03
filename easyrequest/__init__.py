@@ -2,6 +2,22 @@
 # @Time    : 2019/11/28 15:41
 # @Author  : Liu Yalong
 # @File    : __init__.py.py
+
+
+import sys
+
+# Check required Python version
+if sys.version_info < (3, 6):
+    print("\033[32mError: EasyRequest requires Python 3.6+\033[0m")
+    sys.exit(1)
+del sys
+
+import warnings
+
+# Ignore requests warnings
+warnings.filterwarnings('ignore', module='requests')
+del warnings
+
 from easyrequest import schedule
 from easyrequest.items import Items
 from easyrequest.request.request import Request
