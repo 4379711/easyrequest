@@ -66,7 +66,6 @@ class SpiderRunner:
         retry_times += 1
         default_config = self._config_request_instance()
 
-        start_time = time.time()
         logger.info('start request url <%s>' % url)
         logger.debug('start request of url <%s>' % url)
 
@@ -131,7 +130,4 @@ class SpiderRunner:
 
         time.sleep(self.spider.settings.REQUEST_DELAY)
 
-        need_delay_time = self.spider.settings.PER_REQUEST_MIN_TIME
-        if time.time() - start_time < need_delay_time:
-            time.sleep(need_delay_time - (time.time() - start_time))
         return 1

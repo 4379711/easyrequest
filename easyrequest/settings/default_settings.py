@@ -2,7 +2,10 @@
 # @Time    : 2019/11/30 16:30
 # @Author  : Liu Yalong
 # @File    : default_settings.py
+import os
 
+# Number of processes for each spider(default: cpu_count())
+PROCESS_NUM = os.cpu_count()
 
 # Configure maximum concurrent requests (default: 10)
 CONCURRENT_REQUESTS = 10
@@ -20,8 +23,6 @@ REQUEST_DELAY = 0
 # Retry times per request when it failed
 RETRY_TIMES = 3
 
-# Limit each request time
-PER_REQUEST_MIN_TIME = 3
 
 # Default request headers
 DEFAULT_REQUEST_HEADERS = {

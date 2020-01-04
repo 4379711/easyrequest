@@ -21,14 +21,14 @@ def stop_spider(spider_name, path=None):
     if not exists(file_path):
         print('spider maybe not running')
         return
-    with open(to_read_file, 'r', encoding='utf-8') as f:
+    with open(file_path, 'r', encoding='utf-8') as f:
         pid = int(f.readline())
         pid_list = psutil.pids()
         if pid not in pid_list:
             print('spider maybe not running')
             return
 
-    os.remove(to_read_file)
+    os.remove(file_path)
 
     if platform.system() == 'Windows':
         command = f'taskkill /pid {pid} -f'

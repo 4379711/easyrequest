@@ -14,6 +14,8 @@
 > EasyRequest RunSpider xxx (xxx is your spider name)
 
 ### 关闭一个爬虫
+> 如果同一个爬虫启动多次,只会关闭最后一个启动的爬虫
+
 > EasyRequest StopSpider xxx (xxx is your spider name)
 
 
@@ -24,6 +26,10 @@
 
 
 ## 关于配置文件的说明
+
+- PROCESS_NUM
+
+  - 需要开启进程数,只在linux下起作用
 
 - CONCURRENT_REQUESTS 
 
@@ -40,9 +46,7 @@
 - REQUEST_DELAY
 
   - 每次请求需要等待多久
-- PER_REQUEST_MIN_TIME
 
-  - 每次请求最少花费时间
 - DEFAULT_REQUEST_HEADERS
 
   - 默认请求头
