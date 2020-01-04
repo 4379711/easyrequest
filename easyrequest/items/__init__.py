@@ -16,6 +16,11 @@ from abc import abstractmethod, ABC
 
 
 class Items(ABC):
+
+    @abstractmethod
+    def clean(self, items):
+        pass
+
     @abstractmethod
     def save(self, items):
         pass

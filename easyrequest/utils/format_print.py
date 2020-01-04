@@ -10,8 +10,8 @@ colors = {
 }
 
 
-def pprint(*args, color='green'):
-    tmp = colors.get(color, 'green')
+def pprint(*args, color='red'):
+    tmp = colors.get(color, '31m')
 
     if len(args) == 1:
         print(f'''\033[{tmp}{args[0]}\033[0m''')

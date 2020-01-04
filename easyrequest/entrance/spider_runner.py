@@ -6,6 +6,8 @@ import time
 from inspect import isgeneratorfunction
 from easyrequest import Request
 from easyrequest.utils.log import logger
+from easyrequest.utils.format_print import pprint
+from easyrequest.commands import stop_spider
 
 
 class SpiderRunner:
@@ -41,14 +43,15 @@ class SpiderRunner:
             middleware_request = self._load_middleware('RequestMiddleWare')
             middleware_parse = self._load_middleware('ParserMiddleWare')
         except Exception:
-            print('\033[32mCan not load middleware !\033[0m')
+            print('\033[32mCan not load middleware \nEasyRequest exit !\033[0m')
             logger.error('Can not load middleware !')
+            stop_spider(self.spider.spider_name)
             return 0
 
         # create a spider Request instance
         request_instance = self.spider.run()
         if not isinstance(request_instance, Request):
-            print('\033[32mReturn Type must be Request in run() !\033[0m')
+            print('\033[32mReturn Type must be Request in run()\nEasyRequest exit !\033[0m')
             logger.error('Return Type must be Request in run() !')
             return 0
 
@@ -57,6 +60,7 @@ class SpiderRunner:
 
         if retry_times > self.spider.settings.RETRY_TIMES:
             logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
+            pprint(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
             return 0
 
         retry_times += 1
@@ -79,15 +83,26 @@ class SpiderRunner:
                 item = middleware_parse.from_spider(self.spider.parse_response)(resp)
             except Exception as e:
                 logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
+                pprint(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
+                return 0
+
+            # clean data
+            logger.debug('start clean data of url <%s>' % url)
+            try:
+                items = self.data_persistence.clean(item)
+            except Exception as e:
+                logger.error(f'clean data failed !\n\t\t {e}\n\n')
+                pprint(f'clean data failed !\n\t\t {e}\n\n')
                 return 0
 
             # save data
             logger.debug('start save data of url <%s>' % url)
 
             try:
-                self.data_persistence.save(item)
+                self.data_persistence.save(items)
             except Exception as e:
                 logger.error(f'save data failed !\n\t\t {e}\n\n')
+                pprint(f'save data failed !\n\t\t {e}\n\n')
                 return 0
 
         else:
@@ -118,5 +133,5 @@ class SpiderRunner:
 
         need_delay_time = self.spider.settings.PER_REQUEST_MIN_TIME
         if time.time() - start_time < need_delay_time:
-            time.sleep(time.time() - start_time)
+            time.sleep(need_delay_time - (time.time() - start_time))
         return 1

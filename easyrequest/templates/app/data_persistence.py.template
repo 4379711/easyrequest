@@ -4,9 +4,9 @@ from easyrequest import Items
 
 class >>classname(Items):
 
-    # clean data if necessary
-    def clean(self, item):
-        return
+    # clean data if necessary,must return new items
+    def clean(self, items):
+        return items
 
     # save data
     def save(self, items):
