@@ -8,6 +8,7 @@ from subprocess import Popen, PIPE
 from os.path import join
 from os import getcwd
 
+from easyrequest.utils import pprint
 from easyrequest.utils.log import logger
 from easyrequest.error import ConfigError
 from easyrequest.utils.load_module import load_module_from_path
@@ -18,7 +19,10 @@ __all__ = ['run_spider_name', 'load_tasks', 'timer_task_by_str']
 
 
 def run_spider_name(name):
-    logger.info(f'Scheduled task <{name}> is about to start')
+    """
+    Run a spider by spider name.
+    """
+    logger.info(f'<{name}> is about to start !')
     run_command = 'easyrequest RunSpider %s' % name
     process = Popen(run_command,
                     shell=True,
@@ -28,12 +32,16 @@ def run_spider_name(name):
                     stdout=None)
     sleep(1)
     if process.poll() is not None:
-        logger.error(f'Scheduled task <{name}> crawler process failed to start !')
+        pprint(f' <{name}> crawler process maybe startup failed !')
+        logger.error(f'<{name}> crawler process maybe startup failed !')
     process.wait()
-    logger.info(f'Scheduled task <{name}> closed\n\n')
+    logger.info(f'<{name}> closed !\n\n')
 
 
 def load_tasks():
+    """
+    Load timer tasks form settings.py , return command str .
+    """
     cmd_path = getcwd()
     path.insert(0, cmd_path)
 
@@ -54,4 +62,5 @@ def load_tasks():
 
 
 def timer_task_by_str(str_):
+    """Execute command str"""
     eval(str_)

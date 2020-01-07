@@ -4,8 +4,8 @@
 # @File    : __init__.py.py
 
 import platform
-from easyrequest.entrance.spider_runner import SpiderRunner
 from easyrequest.utils import split_urls_by_group
+from .spider_runner import SpiderRunner
 import gevent
 from gevent.pool import Pool
 from gevent import monkey
@@ -14,22 +14,28 @@ monkey.patch_socket()
 
 
 class SpiderEngine:
+    """
+    Scheduling all modules .
+    """
+
     def __init__(self, spider, spider_data, mid_cls):
         self.spider = spider
         self.setting = spider.settings
         self.spider_data = spider_data
         self.mid_cls = mid_cls
 
-    def load_config(self):
-        setting = self.spider.settings
-        return setting
-
     def create_coroutine(self, urls):
+        """
+        Entrance of spider , using coroutine scheduling .
+        """
         pool = Pool(size=self.setting.CONCURRENT_REQUESTS)
         runner = SpiderRunner(self.spider, self.spider_data, self.mid_cls)
         gevent.joinall([pool.spawn(runner.start, url) for url in urls])
 
     def create(self):
+        """
+        Multiprocess just used in Linux .
+        """
         if platform.system() == 'Linux':
 
             import multiprocessing

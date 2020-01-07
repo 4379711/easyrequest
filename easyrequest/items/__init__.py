@@ -16,6 +16,9 @@ from abc import abstractmethod, ABC
 
 
 class Items(ABC):
+    """
+    Items template .
+    """
 
     @abstractmethod
     def clean(self, items):

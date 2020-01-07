@@ -6,6 +6,9 @@ from requests import api
 
 
 class Request:
+    """
+    Request a url .
+    """
 
     def __init__(self, method='GET',
                  data_pass=None,

@@ -9,6 +9,9 @@ from easyrequest.utils import *
 
 
 def start_spider(spider_name):
+    """
+    Run a spider .
+    """
     if not check_spider_name(spider_name):
         return
     if not check_project_file(spider_name):

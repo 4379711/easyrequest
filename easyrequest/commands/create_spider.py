@@ -11,12 +11,16 @@ from easyrequest.utils import check_spider_name
 
 import easyrequest
 
+# These files must in a project .
 must_exists = {'settings.py', 'manage.py', 'Models', 'Apps', 'DataPersistence'}
 
 
 class CommandSpider:
 
     def run(self, spider_name):
+        """
+        Create a spider named spider_name .
+        """
         if not check_spider_name(spider_name):
             return
 
@@ -32,8 +36,8 @@ class CommandSpider:
             print(f'\033[32mError: Spider "{spider_name}" already exists \033[0m')
             return
 
-        items_name = f'{spider_name}_items'
         # create spider file
+        items_name = f'{spider_name}_items'
         src_name = join(self.templates_file, 'spider.py.template')
         dst_name = join(abspath(cmd_path), 'Apps', f'{spider_name}.py.template')
         copyfile(src_name, dst_name)
@@ -43,7 +47,7 @@ class CommandSpider:
                              itemclassname=string_camelcase(items_name)
                              )
 
-        # create items file
+        # create models file
         src_name = join(self.templates_file, 'items.py.template')
 
         dst_name = join(abspath(cmd_path), 'Models', f'{items_name}.py.template')
@@ -73,6 +77,5 @@ class CommandSpider:
 
     @property
     def templates_file(self):
-        # 模板路径
         _templates_base_dir = join(easyrequest.__path__[0], 'templates')
         return join(_templates_base_dir, 'app')

@@ -7,6 +7,9 @@ import lxml.etree
 
 
 class Parser:
+    """
+    Parse html .
+    """
 
     def __init__(self, html):
         self.html = html

@@ -17,6 +17,13 @@ class CommandProject:
 
     @staticmethod
     def _is_valid_name(project_name):
+        """
+        Check project name is valid , the name can not be a exist module .
+
+        Project names must begin with a letter and contain only
+        letters, numbers and underscores .
+
+        """
         def _module_exists(module_name):
             try:
                 import_module(module_name)
@@ -34,6 +41,9 @@ class CommandProject:
         return False
 
     def _copytree(self, src, dst):
+        """
+        Copy all files for src to dst .
+        """
         ignore = IGNORE
         names = os.listdir(src)
         ignored_names = ignore(src, names)
@@ -54,8 +64,11 @@ class CommandProject:
         copystat(src, dst)
 
     def run(self, project_name):
+        """
+        Create a project named project_name in cmd path .
+        """
 
-        # 新建的project存放路径
+        # cmd path
         project_dir = os.getcwd()
 
         if exists(join(project_dir, project_name)):
@@ -81,6 +94,6 @@ class CommandProject:
 
     @property
     def templates_dir(self):
-        # 模板路径
+        # templates path
         _templates_base_dir = join(easyrequest.__path__[0], 'templates')
         return join(_templates_base_dir, 'projects')

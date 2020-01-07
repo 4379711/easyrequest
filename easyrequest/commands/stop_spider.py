@@ -12,6 +12,9 @@ import time
 
 
 def stop_spider(spider_name, path=None):
+    """
+    Stop a running spider .
+    """
     if path is None:
         base_path = os.getcwd()
     else:
@@ -32,6 +35,7 @@ def stop_spider(spider_name, path=None):
 
     os.remove(file_path)
 
+    # signal can only be used on linux .
     if platform.system() == 'Windows':
         command = f'taskkill /pid {pid} -f'
 
@@ -50,6 +54,6 @@ def stop_spider(spider_name, path=None):
     # CHECK RESULT
     pid_list = psutil.pids()
     if int(pid) not in pid_list:
-        print('Stop spider successful !')
+        print('\tStop spider successful !')
     else:
-        print('Stop spider maybe failed !')
+        print('\tStop spider maybe failed !')

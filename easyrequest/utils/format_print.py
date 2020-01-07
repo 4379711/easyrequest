@@ -11,6 +11,9 @@ colors = {
 
 
 def pprint(*args, color='red'):
+    """
+    控制台输出不同颜色字体.
+    """
     tmp = colors.get(color, '31m')
 
     if len(args) == 1:

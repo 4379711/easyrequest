@@ -6,6 +6,9 @@ from easyrequest.items.mydict import MyDict
 
 
 class MyType:
+    """
+    Check type of filed .
+    """
 
     def __init__(self, name, expect_type):
         self.expect_type = expect_type

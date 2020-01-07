@@ -5,6 +5,9 @@
 
 
 class MyDict:
+    """
+    A special data type .
+    """
 
     def __getattr__(self, item):
         return None

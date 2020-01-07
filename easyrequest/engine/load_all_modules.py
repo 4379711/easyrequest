@@ -12,6 +12,9 @@ from easyrequest.utils.load_module import load_cls_from_module, load_module_from
 
 
 class LoadAllModules:
+    """
+    Load all modules of a project .
+    """
 
     def __init__(self, spider_name):
         self.spider_name = spider_name
@@ -34,6 +37,7 @@ class LoadAllModules:
         return sp_classes
 
     def load_data_persistence_cls(self):
+        # load data persistence
         spider_data_file_name = f'{self.spider_name}_data_persistence.py'
         spider_data_module = load_module_from_path(self.spider_name,
                                                    join(self.cmd_path, join('DataPersistence', spider_data_file_name)))
@@ -42,6 +46,7 @@ class LoadAllModules:
         return spider_data_cls
 
     def load_middleware_cls(self):
+        # load middleware
         spider_middleware_name = f'{self.spider_name}_middleware.py'
         spider_middleware_module = load_module_from_path(
             self.spider_name, join(self.cmd_path, join('Middlewares', spider_middleware_name)))
