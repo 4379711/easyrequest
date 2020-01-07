@@ -4,11 +4,10 @@
 # @File    : __init__.py.py
 
 import click
-import os
 
 from .cerate_project import CommandProject
 from .create_spider import CommandSpider
-from .start_spider import CommandStartSpider
+from .start_spider import start_spider
 from .stop_spider import stop_spider
 
 
@@ -37,15 +36,7 @@ def run_spider_(spider_name):
     """
     Run Spider to get data
     """
-    # record process id to file
-    base_path = os.getcwd()
-    to_write_file = str(spider_name) + '.pid'
-    file_path = os.path.join(base_path, to_write_file)
-    pid = os.getpid()
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(str(pid))
-        f.flush()
-    CommandStartSpider().run(spider_name)
+    start_spider(spider_name)
 
 
 @click.command(name='StopSpider')

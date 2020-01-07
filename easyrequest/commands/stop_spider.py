@@ -8,6 +8,7 @@ import psutil
 import os
 import platform
 import signal
+import time
 
 
 def stop_spider(spider_name, path=None):
@@ -18,14 +19,15 @@ def stop_spider(spider_name, path=None):
 
     to_read_file = str(spider_name) + '.pid'
     file_path = os.path.join(base_path, to_read_file)
+
     if not exists(file_path):
-        print('spider maybe not running')
+        print('Spider maybe not running !')
         return
     with open(file_path, 'r', encoding='utf-8') as f:
         pid = int(f.readline())
         pid_list = psutil.pids()
         if pid not in pid_list:
-            print('spider maybe not running')
+            print('Spider maybe not running !')
             return
 
     os.remove(file_path)
@@ -41,11 +43,13 @@ def stop_spider(spider_name, path=None):
                    stdout=PIPE)
         pp.communicate()
     else:
-        os.kill(int(pid), signal.SIGKILL)
+        os.killpg(os.getpgid(int(pid)), signal.SIGKILL)
 
+    print('Checking result ...\n')
+    time.sleep(0.5)
     # CHECK RESULT
     pid_list = psutil.pids()
     if int(pid) not in pid_list:
-        print('stop spider successful')
+        print('Stop spider successful !')
     else:
-        print('stop spider failed')
+        print('Stop spider maybe failed !')

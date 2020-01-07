@@ -2,13 +2,12 @@
 # @Time    : 2019/11/29 9:21
 # @Author  : Liu Yalong
 # @File    : create_spider.py
-from __future__ import print_function
-import re
 import os
 from os.path import join, exists, abspath
 from shutil import copyfile
 
 from easyrequest.utils.template import render_template_file, string_camelcase
+from easyrequest.utils import check_spider_name
 
 import easyrequest
 
@@ -17,18 +16,8 @@ must_exists = {'settings.py', 'manage.py', 'Models', 'Apps', 'DataPersistence'}
 
 class CommandSpider:
 
-    @staticmethod
-    def _is_valid_name(spider_name):
-
-        if not re.search(r'^[_a-zA-Z]\w*$', spider_name):
-            print('\033[32mError: spider names must begin with a letter and contain only\n'
-                  'letters, numbers and underscores\033[0m')
-            return False
-        else:
-            return True
-
     def run(self, spider_name):
-        if not self._is_valid_name(spider_name):
+        if not check_spider_name(spider_name):
             return
 
         cmd_path = os.getcwd()
@@ -39,14 +28,14 @@ class CommandSpider:
             return
         spider_file_name = f'{spider_name}.py'
 
-        if exists(join(cmd_path, 'apps', spider_file_name)):
+        if exists(join(cmd_path, 'Apps', spider_file_name)):
             print(f'\033[32mError: Spider "{spider_name}" already exists \033[0m')
             return
 
         items_name = f'{spider_name}_items'
         # create spider file
         src_name = join(self.templates_file, 'spider.py.template')
-        dst_name = join(abspath(cmd_path), 'apps', f'{spider_name}.py.template')
+        dst_name = join(abspath(cmd_path), 'Apps', f'{spider_name}.py.template')
         copyfile(src_name, dst_name)
         render_template_file(dst_name,
                              classname=string_camelcase(spider_name),
