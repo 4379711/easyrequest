@@ -48,11 +48,15 @@ class ParserMiddleWares(BaseMiddleWares):
         self.func = func
 
     def __call__(self, resp):
+        gen_tmp = self.func(resp)
         try:
             self.before(resp)
-            result = self.func(resp)
-            self.after(resp)
-            return result
+            while True:
+                result = next(gen_tmp)
+                self.after(resp)
+                yield result
+        except StopIteration:
+            raise StopIteration
         except Exception as e:
             self.exception(e, resp)
             raise e

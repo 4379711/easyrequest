@@ -10,7 +10,7 @@ with open("README.md", "r", encoding='utf-8') as fh:
 
 setup(
     name='EasyRequest',
-    version="1.0.2",
+    version="2.0.0",
     description=(
         "A easy use request frame !"
     ),

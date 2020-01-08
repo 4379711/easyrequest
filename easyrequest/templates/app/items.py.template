@@ -4,7 +4,7 @@ from easyrequest.items import *
 
 class >>classname:
     # write your model here
-    # parameter name must be different if you use a type filed twice more
+    # parameter name must be different if you use same type filed twice more
 
     str_filed = StringFiled(name='filed1')
     int_filed = IntFiled(name='filed2')

@@ -16,7 +16,7 @@ class MyType:
 
     def __set__(self, instance, value):
         if self.expect_type and not isinstance(value, self.expect_type):
-            raise TypeError(f'Except <{self.expect_type.__name__}> but got {type(value)}')
+            raise TypeError(f'Expect <{self.expect_type.__name__}> but got {type(value)}')
 
         instance.__dict__[self.name] = value
 
