@@ -12,12 +12,6 @@ if sys.version_info < (3, 6):
     sys.exit(1)
 del sys
 
-import warnings
-
-# Ignore requests warnings
-warnings.filterwarnings('ignore', module='requests')
-del warnings
-
 from easyrequest import schedule
 from easyrequest.items import Items
 from easyrequest.request.request import Request

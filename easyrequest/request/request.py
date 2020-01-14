@@ -4,6 +4,10 @@
 # @File    : request.py
 from requests import api
 
+import urllib3
+
+urllib3.disable_warnings()
+
 
 class Request:
     """
@@ -22,9 +26,7 @@ class Request:
         self.callback = callback
         self.url = url
 
-    def request(self, url=None, config=None):
-        if self.url is None:
-            self.url = url
+    def request(self, config=None):
         config.update(self.kwargs)
         resp = api.request(method=self.method,
                            url=self.url,

@@ -4,9 +4,11 @@
 # @File    : __init__.py.py
 
 import platform
+
+from easyrequest.middlewares import MixFuncGeneratorMiddleWare
 from easyrequest.utils import split_urls_by_group
+from .register import Register, Listener, Event
 from .spider_runner import SpiderRunner
-import gevent
 from gevent.pool import Pool
 from gevent import monkey
 
@@ -18,39 +20,53 @@ class SpiderEngine:
     Scheduling all modules .
     """
 
-    def __init__(self, spider, spider_data, mid_cls):
-        self.spider = spider
-        self.setting = spider.settings
+    def __init__(self, spider_cls, spider_data, mid_cls):
+        self.spider_cls = spider_cls
+        self.setting = spider_cls.settings
         self.spider_data = spider_data
         self.mid_cls = mid_cls
+        self.pool = Pool(size=self.setting.CONCURRENT_REQUESTS)
 
-    def create_coroutine(self, urls):
+    def start(self):
         """
-        Entrance of spider , using coroutine scheduling .
+        Start manager for listening events .
         """
-        pool = Pool(size=self.setting.CONCURRENT_REQUESTS)
-        runner = SpiderRunner(self.spider, self.spider_data, self.mid_cls)
-        gevent.joinall([pool.spawn(runner.start, url) for url in urls])
+        manager = Register.register_manager()
+        task_sender = Register.task_sender(manager)
 
-    def create(self):
-        """
-        Multiprocess just used in Linux .
-        """
-        if platform.system() == 'Linux':
+        listener = Listener(self.pool, self.spider_cls, self.spider_data, self.mid_cls, task_sender)
 
-            import multiprocessing
+        Register.bind_handler(manager, Event.EVENT_REQUEST, listener.deal_request_event)
+        Register.bind_handler(manager, Event.EVENT_PARSE, listener.deal_parse_event)
+        manager.start()
 
-            urls_iter = split_urls_by_group(self.spider.start_urls, self.setting.PROCESS_NUM)
+        print('即将开始请求!')
+        request_iter = MixFuncGeneratorMiddleWare(self.spider_cls.from_spider(self.spider_cls).run)()
 
-            process_list = []
-            for urls in urls_iter:
-                if urls is []:
-                    break
-                p = multiprocessing.Process(target=self.create_coroutine, args=(urls,), daemon=True)
-                p.start()
-                process_list.append(p)
+        for request_instance in request_iter:
+            task_sender.send_request(request_instance=request_instance)
 
-            for i in process_list:
-                i.join()
-        else:
-            self.create_coroutine(self.spider.start_urls)
+        # self.pool.join()
+
+    # def create(self):
+    #     """
+    #     Multiprocess just used in Linux .
+    #     """
+    #     if platform.system() == 'Linux' and len(self.spider.start_urls) > 1:
+    #
+    #         import multiprocessing
+    #
+    #         urls_iter = split_urls_by_group(self.spider.start_urls, self.setting.PROCESS_NUM)
+    #
+    #         process_list = []
+    #         for urls in urls_iter:
+    #             if urls is []:
+    #                 break
+    #             p = multiprocessing.Process(target=self.create_coroutine, args=(urls,), daemon=True)
+    #             p.start()
+    #             process_list.append(p)
+    #
+    #         for i in process_list:
+    #             i.join()
+    #     else:
+    #         self.create_coroutine()
