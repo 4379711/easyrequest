@@ -47,7 +47,6 @@ setup(
     install_requires=['colorama',
                       'click',
                       'requests',
-                      'gevent',
                       'lxml',
                       'psutil',
                       'urllib3'

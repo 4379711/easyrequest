@@ -17,27 +17,20 @@ class Listener(SpiderRunner):
         super(Listener, self).__init__(pool, spider_cls, data_cls, mid_cls_list, task_sender)
 
     def put_request_to_pool(self, request_instance):
-
-        # 任务实际上在另一个线程进行的,此处会造成任务丢失
-        tmp = self.pool.spawn(self._request, request_instance)
-        self.pool.start(tmp)
+        self.pool.submit(self._request, request_instance)
 
     def deal_request_event(self, event):
         request_instance = event.event
-        print('收到request事件,并放入池中', request_instance.url)
         self.put_request_to_pool(request_instance)
 
     def deal_parse_event(self, event):
         resp = event.event
         if resp.callback is None or resp.callback.__name__ == 'parse_response':
-            print('收到parser事件,即将解析')
             self._parse_resp_and_save_by_generator(resp)
 
         else:
-            print('即将执行callback', resp.callback.__name__)
             callback_iter = MixFuncGeneratorMiddleWare(resp.callback)(resp)
             for request_instance in callback_iter:
-                print('callback事件放入池中', request_instance.url)
                 self.put_request_to_pool(request_instance)
 
 
@@ -54,12 +47,10 @@ class SendTasks:
         event.event = request_instance
 
         self.__eventManager.send_event(event)
-        print('发送request', event.event.url)
 
     def send_parse(self, resp):
         event = Event(type_=Event.EVENT_PARSE)
         event.event = resp
-        print('发送parse', event.event)
         self.__eventManager.send_event(event)
 
 

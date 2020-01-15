@@ -47,7 +47,7 @@ class EventManager:
         Start event manager .
         """
         self.__active = True
-        self.__thread.daemon = False
+        self.__thread.daemon = True
         self.__thread.start()
 
     def stop(self):

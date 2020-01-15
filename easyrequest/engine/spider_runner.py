@@ -25,7 +25,6 @@ class SpiderRunner:
         self.default_config = self._config_request_instance()
         self.task_sender = task_sender
 
-
     def _load_data_persistence(self):
         data_persistence = self.data_cls.from_spider()
         return data_persistence
@@ -67,7 +66,6 @@ class SpiderRunner:
             return 0
 
     def _request(self, request_instance, retry_times=0, e=None, resp=None):
-        print('进入_request')
         if not isinstance(request_instance, Request):
             print('\033[32mReturn Type must be Request in run()\nEasyRequest exit !\033[0m')
             logger.error('Return Type must be Request in run() !')

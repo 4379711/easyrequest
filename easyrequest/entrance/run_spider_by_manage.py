@@ -36,7 +36,10 @@ def run_spider_name(name):
         logger.error(f'<{name}> crawler process maybe startup failed !')
     process.wait()
     a, b = process.communicate()
-    print(a, b)
+    if a:
+        print(a)
+    if b:
+        print(b)
     logger.info(f'<{name}> closed !\n\n')
 
 

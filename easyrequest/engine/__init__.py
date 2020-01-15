@@ -3,16 +3,12 @@
 # @Author  : Liu Yalong
 # @File    : __init__.py.py
 
-import platform
-
+import time
+from concurrent.futures import ThreadPoolExecutor
 from easyrequest.middlewares import MixFuncGeneratorMiddleWare
-from easyrequest.utils import split_urls_by_group
+# from easyrequest.utils import split_urls_by_group
 from .register import Register, Listener, Event
 from .spider_runner import SpiderRunner
-from gevent.pool import Pool
-from gevent import monkey
-
-monkey.patch_socket()
 
 
 class SpiderEngine:
@@ -25,7 +21,7 @@ class SpiderEngine:
         self.setting = spider_cls.settings
         self.spider_data = spider_data
         self.mid_cls = mid_cls
-        self.pool = Pool(size=self.setting.CONCURRENT_REQUESTS)
+        self.pool = ThreadPoolExecutor(max_workers=self.setting.CONCURRENT_REQUESTS)
 
     def start(self):
         """
@@ -40,13 +36,12 @@ class SpiderEngine:
         Register.bind_handler(manager, Event.EVENT_PARSE, listener.deal_parse_event)
         manager.start()
 
-        print('即将开始请求!')
         request_iter = MixFuncGeneratorMiddleWare(self.spider_cls.from_spider(self.spider_cls).run)()
 
         for request_instance in request_iter:
             task_sender.send_request(request_instance=request_instance)
-
-        # self.pool.join()
+        print('100s 后结束!')
+        time.sleep(100)
 
     # def create(self):
     #     """
