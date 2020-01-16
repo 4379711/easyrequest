@@ -55,3 +55,11 @@ class ConfigError(Exception):
         return 'Error of %s config in settings' % self.name
 
     __repr__ = __str__
+
+
+class RequestUrl(Exception):
+
+    def __str__(self):
+        return 'URL must be type str !'
+
+    __repr__ = __str__

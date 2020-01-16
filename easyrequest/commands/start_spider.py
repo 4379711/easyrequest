@@ -41,3 +41,4 @@ def start_spider(spider_name):
     # create engine
     engine = SpiderEngine(spider_cls, spider_data_cls, spider_middleware_cls_list)
     engine.start()
+

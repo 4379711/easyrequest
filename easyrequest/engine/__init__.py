@@ -3,49 +3,72 @@
 # @Author  : Liu Yalong
 # @File    : __init__.py.py
 
-import time
 from concurrent.futures import ThreadPoolExecutor
+
 from easyrequest.middlewares import MixFuncGeneratorMiddleWare
-# from easyrequest.utils import split_urls_by_group
-from .register import Register, Listener, Event
+from .register import Register, Listener, Event, record_task_info
 from .spider_runner import SpiderRunner
 
 
+# from easyrequest.utils import split_urls_by_group
+
+
 class SpiderEngine:
-    """
-    Scheduling all modules .
-    """
 
     def __init__(self, spider_cls, spider_data, mid_cls):
+        """
+        This is a engine for scheduling all modules .
+
+        :param spider_cls: Class of spider written by user .
+        :param spider_data: Class of save data written by user .
+        :param mid_cls: Class of middleware written by user .
+        """
         self.spider_cls = spider_cls
         self.setting = spider_cls.settings
         self.spider_data = spider_data
         self.mid_cls = mid_cls
+        # Create a thread pool for requesting urls .
         self.pool = ThreadPoolExecutor(max_workers=self.setting.CONCURRENT_REQUESTS)
+        # Create a event manager .
+        self.manager = Register.register_manager()
 
     def start(self):
         """
         Start manager for listening events .
         """
-        manager = Register.register_manager()
-        task_sender = Register.task_sender(manager)
 
+        # Task sender could send a task to task manager .
+        task_sender = Register.task_sender(self.manager)
+
+        # Register a listener to answer the task where the sender send before .
         listener = Listener(self.pool, self.spider_cls, self.spider_data, self.mid_cls, task_sender)
 
-        Register.bind_handler(manager, Event.EVENT_REQUEST, listener.deal_request_event)
-        Register.bind_handler(manager, Event.EVENT_PARSE, listener.deal_parse_event)
-        manager.start()
+        # Bind a function to deal with events .
+        Register.bind_handler(self.manager, Event.EVENT_REQUEST, listener.deal_request_event)
+        Register.bind_handler(self.manager, Event.EVENT_PARSE, listener.deal_parse_event)
 
+        # Start event manager .
+        self.manager.start()
+
+        # Make sure run() is a generator ,change it to a generator if not .
         request_iter = MixFuncGeneratorMiddleWare(self.spider_cls.from_spider(self.spider_cls).run)()
 
+        # Get all instance of Request from run() .
         for request_instance in request_iter:
             task_sender.send_request(request_instance=request_instance)
-        print('100s 后结束!')
-        time.sleep(100)
+
+        while True:
+            request, success, request_failed, parse_failed = record_task_info.info
+            if request == (success + request_failed + parse_failed):
+                self.stop()
+                break
+
+    def stop(self):
+        self.manager.stop()
 
     # def create(self):
     #     """
-    #     Multiprocess just used in Linux .
+    #     Multiprocess just used on Linux .
     #     """
     #     if platform.system() == 'Linux' and len(self.spider.start_urls) > 1:
     #

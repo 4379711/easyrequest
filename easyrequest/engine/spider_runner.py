@@ -4,6 +4,7 @@
 # @File    : spider_runner.py
 import time
 from easyrequest import Request
+from easyrequest.engine import record_task_info
 from easyrequest.utils.log import logger
 from easyrequest.utils.format_print import pprint
 
@@ -60,15 +61,18 @@ class SpiderRunner:
                 except Exception as e:
                     pprint(f'Save data failed !\n\t\t {e}\n\n')
                     logger.error(f'Save data failed !\n\t\t {e}\n\n')
+                    record_task_info.parse_failed_plus()
 
         except Exception as e:
             logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
+            record_task_info.parse_failed_plus()
             return 0
 
     def _request(self, request_instance, retry_times=0, e=None, resp=None):
         if not isinstance(request_instance, Request):
             print('\033[32mReturn Type must be Request in run()\nEasyRequest exit !\033[0m')
             logger.error('Return Type must be Request in run() !')
+
             return
 
         url = request_instance.url
@@ -86,13 +90,15 @@ class SpiderRunner:
         logger.debug('start request of url <%s>' % url)
 
         try:
-            resp_ = self.middleware_request(request_instance.request)(config=self.default_config)
+            resp = self.middleware_request(request_instance.request)(config=self.default_config)
 
         except Exception as e:
             return self._request(request_instance, retry_times, e, resp)
 
-        else:
-            self.task_sender.send_parse(resp_)
         finally:
+            if not resp:
+                record_task_info.request_failed_plus()
+            else:
+                self.task_sender.send_parse(resp)
             # sleep after each request
             time.sleep(self.spider.settings.REQUEST_DELAY)

@@ -1,6 +1,11 @@
 from easyrequest.middlewares import MixFuncGeneratorMiddleWare
+from easyrequest.utils import RecordTaskInfo
+
 from .event_manage import EventManager
 from .spider_runner import SpiderRunner
+
+# Record all tasks info .
+record_task_info = RecordTaskInfo()
 
 
 class Event:
@@ -17,14 +22,25 @@ class Listener(SpiderRunner):
         super(Listener, self).__init__(pool, spider_cls, data_cls, mid_cls_list, task_sender)
 
     def put_request_to_pool(self, request_instance):
+
+        # record task .
+        if request_instance.is_filter and record_task_info.is_in_set(request_instance.md5):
+            return
+        record_task_info.request_add(request_instance.md5)
+
+        # run task .
         self.pool.submit(self._request, request_instance)
 
     def deal_request_event(self, event):
         request_instance = event.event
+
         self.put_request_to_pool(request_instance)
 
     def deal_parse_event(self, event):
         resp = event.event
+
+        record_task_info.parse_add(resp.md5)
+
         if resp.callback is None or resp.callback.__name__ == 'parse_response':
             self._parse_resp_and_save_by_generator(resp)
 
@@ -43,9 +59,9 @@ class SendTasks:
         """
         Send a instance of Request .
         """
+
         event = Event(type_=Event.EVENT_REQUEST)
         event.event = request_instance
-
         self.__eventManager.send_event(event)
 
     def send_parse(self, resp):

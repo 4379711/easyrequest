@@ -10,6 +10,7 @@ PROCESS_NUM = os.cpu_count()
 # Configure maximum concurrent requests (default: 10)
 CONCURRENT_REQUESTS = 10
 
+
 # Timeout of per request (default:300 seconds)
 DEFAULT_REQUEST_TIMEOUT = 300
 
@@ -22,7 +23,6 @@ REQUEST_DELAY = 0
 
 # Retry times per request when it failed
 RETRY_TIMES = 3
-
 
 # Default request headers
 DEFAULT_REQUEST_HEADERS = {
