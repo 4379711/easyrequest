@@ -37,8 +37,10 @@ def run_spider_name(name):
     process.wait()
     a, b = process.communicate()
     if a:
+        print(a)
         logger.info(str(a))
     if b:
+        print(b)
         logger.error(str(b))
     logger.info(f'<{name}> closed !\n\n')
 

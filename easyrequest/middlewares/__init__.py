@@ -68,17 +68,18 @@ class ParserMiddleWares(BaseMiddleWares):
         if isgeneratorfunction(self.func):
 
             gen_tmp = self.func(resp)
-            try:
-                self.before(resp)
-                while True:
+
+            self.before(resp)
+            while True:
+                try:
                     result = next(gen_tmp)
                     self.after(resp)
                     yield result
-            except StopIteration:
-                raise StopIteration
-            except Exception as e:
-                self.exception(e, resp)
-                raise e
+                except StopIteration:
+                    raise StopIteration
+                except Exception as e:
+                    yield self.exception(e, resp)
+
         else:
 
             try:
@@ -87,8 +88,7 @@ class ParserMiddleWares(BaseMiddleWares):
                 self.after(resp)
                 yield result
             except Exception as e:
-                self.exception(e, resp)
-                raise e
+                yield self.exception(e, resp)
 
     @abstractmethod
     def exception(self, error, resp):

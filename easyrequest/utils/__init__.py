@@ -8,7 +8,6 @@ import sys
 from hashlib import md5
 from os.path import join, exists
 from threading import Lock
-from collections import defaultdict
 
 from easyrequest.error import RequestUrl
 from .format_print import pprint
@@ -97,39 +96,68 @@ class RecordTaskInfo:
     def __init__(self):
         self._all_request = set()
         self._all_parse = set()
-        self._request = 0
+
+        self._request_success = 0
         self._request_failed = 0
+        self._parse_success = 0
         self._parse_failed = 0
-        self._success = 0
+        self._save_failed = 0
+        self._save_success = 0
+
         self._lock0 = Lock()
-        self._lock4 = Lock()
         self._lock1 = Lock()
         self._lock2 = Lock()
+        self._lock3 = Lock()
+        self._lock4 = Lock()
         self._lock5 = Lock()
+        self._lock6 = Lock()
+        self._lock7 = Lock()
 
     def request_add(self, value):
         with self._lock0:
             self._all_request.add(value)
 
     def parse_add(self, value):
-        with self._lock4:
+        with self._lock1:
             self._all_parse.add(value)
 
+    def request_success_plus(self):
+        with self._lock2:
+            self._request_success += 1
+
     def request_failed_plus(self):
-        with self._lock1:
+        with self._lock3:
             self._request_failed += 1
+
+    def parse_success_plus(self):
+        with self._lock4:
+            self._parse_success += 1
 
     def parse_failed_plus(self):
         with self._lock5:
             self._parse_failed += 1
 
-    def success_plus(self):
-        with self._lock2:
-            self._success += 1
+    def save_failed_plus(self):
+        with self._lock6:
+            self._save_failed += 1
+
+    def save_success_plus(self):
+        with self._lock7:
+            self._save_success += 1
 
     def is_in_set(self, value):
         return value in self._all_request
 
     @property
+    def two_set_same(self):
+        return self._all_request == self._all_parse
+
+    @property
     def info(self):
-        return self._request, self._success, self._request_failed, self._parse_failed
+        return (self._request_success,
+                self._request_failed,
+                self._parse_success,
+                self._parse_failed,
+                self._save_success,
+                self._save_failed
+                )

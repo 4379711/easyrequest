@@ -6,38 +6,40 @@ from easyrequest.middlewares import RequestMiddleWares, ParserMiddleWares
 
 
 class >>{classname}RequestMiddleWare(RequestMiddleWares):
-    # write your request middleware for a spider here
+    # write your request middleware for a spider here .
 
     def before(self, url, params):
-        # Called before request each url
+        # Called before request each url .
 
         pass
 
     def after(self, url):
-        # Called after request each url
+        # Called after request each url .
 
         pass
 
     def exception(self, error, url, params):
-        # Called exception occurred when request each url
+        # Called exception occurred when request each url .
 
-        pass
+        print(error)
 
 
 class >>{classname}ParserMiddleWare(ParserMiddleWares):
-    # write your Parser middleware for a spider here
+    # write your Parser middleware for a spider here .
 
     def before(self, resp):
-        # Called before parse each response
+        # Called before parse each response .
 
         pass
 
     def after(self, resp):
-        # Called after parse each response
+        # Called after parse each response .
 
         pass
 
     def exception(self, error, resp):
-        # Called exception occurred when parse each response
+        # Called exception occurred when parse each response .
+        # Return None ,will do nothing .
+        # Return a item ,will save it .
 
-        pass
+        print(error, resp)

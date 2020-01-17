@@ -2,10 +2,6 @@
 
 # EasyRequest settings for >>{project_name} project
 
-# Number of processes for each spider(default: cpu_count()),just work on linux
-# The best value is default
-# PROCESS_NUM = 1
-
 # Configure maximum concurrent requests (default: 10)
 # CONCURRENT_REQUESTS = 10
 

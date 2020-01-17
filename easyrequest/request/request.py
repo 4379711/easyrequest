@@ -26,7 +26,7 @@ class Request:
         self.data_pass = data_pass
         self.callback = callback
         self.url = url
-        self.filter = is_filter
+        self.is_filter = is_filter
         self.md5 = get_md5(self.url, self.kwargs)
 
     def request(self, config=None):
