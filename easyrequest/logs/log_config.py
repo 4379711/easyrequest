@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/11 16:09
-# @Author  : Liu Yalong
-# @File    : log_config.py
+
 import logging
 import logging.handlers
 from logging.handlers import TimedRotatingFileHandler

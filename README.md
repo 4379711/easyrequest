@@ -1,4 +1,8 @@
-# EasyRequest
+# EasyRequest 
+
+> ##### 这是一个极易使用的异步爬虫框架
+
+
 
 ### 创建一个工程
 > EasyRequest CreateProject xxx (xxx is your project name)
@@ -6,7 +10,7 @@
 ### 进入工程目录
 > cd xxx
 
-### 创建一个爬虫
+### <u>创建一个爬虫</u>
 
 > EasyRequest CreateSpider xxx (xxx is your spider name)
 
@@ -14,8 +18,6 @@
 > EasyRequest RunSpider xxx (xxx is your spider name)
 
 ### 关闭一个爬虫
-> 如果同一个爬虫启动多次,只会关闭最后一个启动的爬虫
-
 > EasyRequest StopSpider xxx (xxx is your spider name)
 
 
@@ -27,13 +29,13 @@
 
 ## 关于配置文件的说明
 
-- PROCESS_NUM
-
-  - 需要开启进程数,只在linux下起作用
-
 - CONCURRENT_REQUESTS 
 
   - 允许同时运行的爬虫数量
+- RECORD_PID
+  - 是否记录本次爬虫pid,可以通过命令行随时终止爬虫
+
+
 - DEFAULT_REQUEST_TIMEOUT
   
   - 每次请求的超时时间,单位是秒,超过后进行重试
@@ -46,7 +48,14 @@
 - REQUEST_DELAY
 
   - 每次请求需要等待多久
+- ~~PROCESS_NUM~~(已弃用)
 
+  - ~~开启进程数量~~
+
+
+- ~~PER_REQUEST_MIN_TIME~~(已弃用)
+
+  - ~~每次请求最少花费时间~~
 - DEFAULT_REQUEST_HEADERS
 
   - 默认请求头
@@ -142,8 +151,76 @@
 
   - spider.pid 
 
-    > 启动爬虫后产生,结束后消失,用来记录爬虫状态,无需关心此文件
+    > 如果开启了记录pid,则会生成此文件
 
 
 
 
+## 关于爬虫书写的说明
+
+- Request()相关参数说明
+  
+  - is_filter:是否开启url过滤,过滤标准是url+参数,默认开启
+  
+  - method:请求方式,默认get
+  
+  - url:请求的url
+  
+  - data_pass:传递值到下一个callback函数
+  
+  - callback:下一个需要执行的函数名,默认是parse_response
+  
+  - proxies:设置代理
+  
+  - timeout:请求超时时间
+  
+  - headers:添加请求头
+  
+  - params:请求参数,多用于get
+  
+  - data:请求参数,字典格式,多用于post
+  
+  - json:请求参数,多用于post
+  
+    
+  
+- Request相关使用说明
+
+  - 除了parse_response函数,其他所有**callback**函数**必须返回Request的实例对象**
+
+  - callback可以使用生成器返回多次,也可返回一次
+
+  - ```python
+        for i in range(2):
+            yield Request(method='GET',
+                          url=self.start_urls[1],
+                          data_pass='传给callback2'
+                         )
+    ```
+
+    ```python
+    return Request(method='GET',
+                   url=self.start_urls[1],
+                   data_pass='传给callback2'
+                  )
+    ```
+
+    
+
+- 中间件相关说明
+  - 只有request中间件和parse中间件,通过类名很好区分
+  - before:
+    - 请求/解析之前需要的操作,无需返回任何值
+  - after:
+    - 请求/解析成功之后需要的操作,无需返回任何值,如果没有执行成功,则不执行,自动进入exception中间件
+  - exception:
+    - request中:无需返回任何值
+    - parser中:
+      - 返回None,放弃本次解析数据
+      - 返回item,则会继续执行,存储这个item
+- 数据存储相关说明
+  - clean:
+    - 如果需要清洗数据,可以在这里进行
+    - **必须返回一个items.**
+  - save:
+    - 存储的相关逻辑写在这里

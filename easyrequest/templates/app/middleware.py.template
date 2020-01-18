@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/30 17:09
-# @Author  : Liu Yalong
-# @File    : middlewares.py
+
 from easyrequest.middlewares import RequestMiddleWares, ParserMiddleWares
 
 
@@ -21,7 +19,7 @@ class >>{classname}RequestMiddleWare(RequestMiddleWares):
     def exception(self, error, url, params):
         # Called exception occurred when request each url .
 
-        print(error)
+        pass
 
 
 class >>{classname}ParserMiddleWare(ParserMiddleWares):
@@ -38,7 +36,6 @@ class >>{classname}ParserMiddleWare(ParserMiddleWares):
         pass
 
     def exception(self, error, resp):
-        # Called exception occurred when parse each response .
         # Return None ,will do nothing .
         # Return a item ,will save it .
 

@@ -1,4 +1,5 @@
 # coding = utf-8
+
 import sys
 from setuptools import setup, find_packages
 
@@ -10,7 +11,7 @@ with open("README.md", "r", encoding='utf-8') as fh:
 
 setup(
     name='EasyRequest',
-    version="2.0.0",
+    version="2.0",
     description=(
         "A easy use request frame !"
     ),
@@ -35,7 +36,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Topic :: Software Development :: Libraries'
     ],
-    # 指定入口
+
     entry_points={
         'console_scripts': [
             'EasyRequest=easyrequest.cmdline:execute',

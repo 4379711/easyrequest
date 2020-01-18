@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/7/2 14:58
-# @Author  : Liu Yalong
-# @File    : __init__.py.py
+
 import collections
 import datetime
 import functools
 import logging
 import random
 import re
-# import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -76,9 +73,6 @@ class Scheduler(object):
         jobs_ = set()
         for job in sorted(runnable_jobs):
             jobs_.add(job)
-
-        # length = threading.active_count()
-        # print('当前线程数量：', length)
 
         self.pool.map(self._run_job, jobs_)
 
@@ -455,12 +449,9 @@ class Job(object):
         :return: The return value returned by the `job_func`
         """
         logger.info('Running job %s', self)
-        # ret = self.job_func()
         self.last_run = datetime.datetime.now()
-        # print('上次执行时间',self.last_run)
         self._schedule_next_run()
 
-        # print('即将执行程序')
         ret = self.job_func()
         return ret
 
@@ -533,7 +524,6 @@ class Job(object):
             # Let's see if we will still make that time we specified today
             if (self.next_run - datetime.datetime.now()).days >= 7:
                 self.next_run -= self.period
-        # print('下次执行时间', self.next_run)
 
 
 # The following methods are shortcuts for not having to

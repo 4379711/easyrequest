@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/21 17:32
-# @Author  : Liu Yalong
-# @File    : parse_response.py
+
 import re
 import lxml.etree
 

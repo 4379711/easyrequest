@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/2 13:53
-# @Author  : Liu Yalong
-# @File    : format_print.py
+
 colors = {
     'green': '32m',
     'blue': '34m',
@@ -12,7 +10,7 @@ colors = {
 
 def pprint(*args, color='red'):
     """
-    控制台输出不同颜色字体.
+    Output different color fonts in the console.
     """
     tmp = colors.get(color, '31m')
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import time
 from easyrequest import Request
 from easyrequest.error import ReturnTypeError

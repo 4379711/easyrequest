@@ -3,10 +3,13 @@
 # EasyRequest settings for >>{project_name} project
 
 # Configure maximum concurrent requests (default: 10)
-# CONCURRENT_REQUESTS = 10
+# CONCURRENT_REQUESTS = 30
 
 # Timeout of per request (default:300 seconds)
-DEFAULT_REQUEST_TIMEOUT = 300
+# DEFAULT_REQUEST_TIMEOUT = 300
+
+# Record the pid in file for killing it .(default: False)
+# RECORD_PID = True
 
 # Either a boolean, in which case it controls whether we verify the server's TLS certificate
 # or a string, in which case it must be a path to a CA bundle to use.
@@ -15,8 +18,8 @@ DEFAULT_REQUEST_VERIFY = False
 # Configure a delay seconds for requests(default: 0)
 REQUEST_DELAY = 0
 
-# Retry times per request when it failed
-RETRY_TIMES = 3
+# Retry times per request when it failed(default: 3)
+# RETRY_TIMES = 0
 
 # Default request headers
 DEFAULT_REQUEST_HEADERS = {

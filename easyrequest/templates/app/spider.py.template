@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
+
 from easyrequest import CrawlSpider, Request, Parser
 from Models.>>itemname import >>itemclassname
 
 
 class >>classname(CrawlSpider):
-    # start_urls must be a list
-    # If you want to generate urls dynamically, you must return a list
-    # e.g.: start_urls = make_urls()
-
+    # Write your spider here .
     start_urls = []
 
     def run(self):
-        # You can configure Request parameters here
+        # You can configure Request parameters here .
 
-        return Request(method='GET', data_pass=None)
+        for url in self.start_urls:
+            yield Request(url=url,
+                          method='GET',
+                          data_pass=None,
+                          is_filter=True,
+                          callback=self.parse_response)
 
     def parse_response(self, response):
         response.encoding = response.apparent_encoding  # set response encoding
-        # start parse your response and save in items
+        # start parse your response and save in items .
+
         html = response.text
         parser = Parser(html)
         data_list = parser.by_xpath('')

@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/30 16:30
-# @Author  : Liu Yalong
-# @File    : default_settings.py
-import os
-
-# Number of processes for each spider(default: cpu_count())
-PROCESS_NUM = os.cpu_count()
 
 # Configure maximum concurrent requests (default: 10)
 CONCURRENT_REQUESTS = 10
 
+# Record the pid in file for killing it .(default: False)
+RECORD_PID = False
 
 # Timeout of per request (default:300 seconds)
 DEFAULT_REQUEST_TIMEOUT = 300

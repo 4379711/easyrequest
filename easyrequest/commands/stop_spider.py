@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2020/1/3 10:42
-# @Author  : Liu Yalong
-# @File    : control_spider.py
+
 from os.path import exists
 from subprocess import Popen, PIPE
 import psutil
@@ -24,7 +22,7 @@ def stop_spider(spider_name, path=None):
     file_path = os.path.join(base_path, to_read_file)
 
     if not exists(file_path):
-        print('Spider maybe not running !')
+        print('Spider maybe not running or you forget to set [ RECORD_PID= True ] in setting.py !')
         return
     with open(file_path, 'r', encoding='utf-8') as f:
         pid = int(f.readline())

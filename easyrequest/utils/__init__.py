@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/28 16:47
-# @Author  : Liu Yalong
-# @File    : __init__.py.py
+
 import re
 import os
 import sys
@@ -16,11 +14,11 @@ from .load_module import *
 
 def average_number_of_groups(m, n):
     """
-    把一个数据分割为近似大小的N份
+    Split a data into N parts of approximate size .
 
-    :param m: 待分割的数据总长度
-    :param n: 需要分为几份
-    :return: 返回列表,代表应该分割的下标+1
+    :param m: Total length of data to be split .
+    :param n: Need to be divided into several portions .
+    :return: list ,index +1 that should be split .
     """
 
     base_num = m // n
@@ -94,8 +92,10 @@ def get_md5(url, kwargs):
 class RecordTaskInfo:
 
     def __init__(self):
-        self._all_request = set()
-        self._all_parse = set()
+        # self._all_request = set()
+        # self._all_parse = set()
+
+        self._all_request = []
 
         self._request_success = 0
         self._request_failed = 0
@@ -113,13 +113,23 @@ class RecordTaskInfo:
         self._lock6 = Lock()
         self._lock7 = Lock()
 
+    # When _all_request is a set() .
+
+    # def request_add(self, value):
+    #     with self._lock0:
+    #         self._all_request.add(value)
+
+    # def parse_add(self, value):
+    #     with self._lock1:
+    #         self._all_parse.add(value)
+
     def request_add(self, value):
         with self._lock0:
-            self._all_request.add(value)
+            self._all_request.append(value)
 
     def parse_add(self, value):
-        with self._lock1:
-            self._all_parse.add(value)
+        with self._lock0:
+            self._all_request.remove(value)
 
     def request_success_plus(self):
         with self._lock2:
@@ -148,9 +158,13 @@ class RecordTaskInfo:
     def is_in_set(self, value):
         return value in self._all_request
 
+    # @property
+    # def two_set_same(self):
+    #     return self._all_request == self._all_parse
+
     @property
-    def two_set_same(self):
-        return self._all_request == self._all_parse
+    def requests_is_empty(self):
+        return self._all_request == []
 
     @property
     def info(self):

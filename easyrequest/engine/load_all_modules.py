@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2020/1/7 14:53
-# @Author  : Liu Yalong
-# @File    : load_all_modules.py
+
 import os
 from os.path import join
 from easyrequest.middlewares import BaseMiddleWares

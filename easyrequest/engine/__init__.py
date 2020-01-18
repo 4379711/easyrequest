@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/30 16:29
-# @Author  : Liu Yalong
-# @File    : __init__.py.py
-import time
+
 from concurrent.futures import ThreadPoolExecutor
 
 from easyrequest import Request
 from easyrequest.middlewares import MixFuncGeneratorMiddleWare
 from easyrequest.utils import pprint
 from .register import Register, Listener, Event, record_task_info, logger
-
-
-# from easyrequest.utils import split_urls_by_group
 
 
 class SpiderEngine:
@@ -76,7 +70,7 @@ class SpiderEngine:
                 record_task_info.info
 
             if request_success == (parse_success + parse_failed) != 0 and \
-                    record_task_info.two_set_same:
+                    record_task_info.requests_is_empty:
                 info_str = f"""The result of this task:
                 
                 Request successful : {request_success} 
@@ -90,30 +84,6 @@ class SpiderEngine:
                 logger.info(info_str)
                 self.stop()
                 break
-            time.sleep(1)
 
     def stop(self):
         self.manager.stop()
-
-    # def create(self):
-    #     """
-    #     Multiprocess just used on Linux .
-    #     """
-    #     if platform.system() == 'Linux' and len(self.spider.start_urls) > 1:
-    #
-    #         import multiprocessing
-    #
-    #         urls_iter = split_urls_by_group(self.spider.start_urls, self.setting.PROCESS_NUM)
-    #
-    #         process_list = []
-    #         for urls in urls_iter:
-    #             if urls is []:
-    #                 break
-    #             p = multiprocessing.Process(target=self.create_coroutine, args=(urls,), daemon=True)
-    #             p.start()
-    #             process_list.append(p)
-    #
-    #         for i in process_list:
-    #             i.join()
-    #     else:
-    #         self.create_coroutine()

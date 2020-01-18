@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/23 15:31
-# @Author  : Liu Yalong
-# @File    : fileds.py
+
 from easyrequest.items.mydict import MyDict
 
 

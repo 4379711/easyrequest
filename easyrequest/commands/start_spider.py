@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/10 16:54
-# @Author  : Liu Yalong
-# @File    : start_spider.py
+
 from easyrequest.engine import SpiderEngine
 from easyrequest.engine.load_all_modules import LoadAllModules
 from easyrequest.error import LoadError
@@ -27,8 +25,9 @@ def start_spider(spider_name):
     if not spider_cls_list or not spider_data_cls or not spider_middleware_cls_list:
         raise LoadError(spider_name)
 
-    # record process pid in file
-    write_process_pid(spider_name)
+    if settings.RECORD_PID:
+        # record process pid in file
+        write_process_pid(spider_name)
 
     # Only load last spider
     spider_cls = spider_cls_list.pop()

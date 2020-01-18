@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/30 17:10
-# @Author  : Liu Yalong
-# @File    : __init__.py.py
+
 import types
 from abc import abstractmethod, ABC
 from inspect import isgeneratorfunction

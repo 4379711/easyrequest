@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/21 13:38
-# @Author  : Liu Yalong
-# @File    : request.py
+
 from requests import api
 import urllib3
 from easyrequest.utils import get_md5

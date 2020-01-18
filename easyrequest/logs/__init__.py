@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/10/22 13:33
-# @Author  : Liu Yalong
-# @File    : __init__.py
+
 from .log_config import LogBase
 import os
 

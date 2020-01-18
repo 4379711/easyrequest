@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2020/1/17 16:47
-# @Author  : Liu Yalong
-# @File    : communication.py
+
 import socket
 
 
@@ -22,5 +20,5 @@ class ControlEngine:
 
     def client(self):
         self.s.connect((self.host, self.port))
-        self.s.send('退出xxx'.encode('utf-8'))
+        self.s.send('exit xxx'.encode('utf-8'))
         self.s.close()

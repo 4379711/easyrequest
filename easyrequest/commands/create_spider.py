@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/29 9:21
-# @Author  : Liu Yalong
-# @File    : create_spider.py
+
 import os
 from os.path import join, exists, abspath
 from shutil import copyfile

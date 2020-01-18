@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/03/22 13:51
-# @Author  : Liu Yalong
-# @File    : singleton.py
 
 # class Singleton:
 #     """

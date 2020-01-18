@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/28 13:44
-# @Author  : Liu Yalong
-# @File    : log.py
+
 
 from easyrequest.utils.load_module import load_module_from_path
 import os

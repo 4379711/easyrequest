@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/10 16:13
-# @Author  : Liu Yalong
-# @File    : loads.py
+
 import inspect
 from importlib import import_module
 from importlib.util import spec_from_file_location, module_from_spec
@@ -46,7 +44,7 @@ def load_module_from_path(name, location):
     """
     module_spec = spec_from_file_location(name, location)
     if module_spec is None:
-        raise AttributeError(f"Can not find module {name} in {location}")
+        raise AttributeError(f"Can not find module {name} in {location} !")
 
     module = module_from_spec(module_spec)
     module_spec.loader.exec_module(module)

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/28 15:47
-# @Author  : Liu Yalong
-# @File    : run_spider_by_manage.py
+
 from time import sleep
 from sys import path
 from subprocess import Popen, PIPE

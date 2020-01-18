@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/10 16:31
-# @Author  : Liu Yalong
-# @File    : load_settings.py
+
 from easyrequest.settings import default_settings, Settings
 
 

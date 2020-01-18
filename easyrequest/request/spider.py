@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/12/19 11:11
-# @Author  : Liu Yalong
-# @File    : spider.py
-from abc import abstractmethod, ABC
 
+from abc import abstractmethod, ABC
 from easyrequest.error import LoadError
 
 
