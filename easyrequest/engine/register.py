@@ -1,5 +1,6 @@
 import time
 from easyrequest import Request
+from easyrequest.error import ReturnTypeError
 from easyrequest.utils.log import logger
 from easyrequest.utils.format_print import pprint
 from easyrequest.middlewares import MixFuncGeneratorMiddleWare
@@ -51,35 +52,39 @@ class SpiderRunner:
     def _parse_resp_and_save_by_generator(self, resp):
         url = resp.url
         logger.debug('Start parse_response of url <%s>' % url)
-        try:
-            func_ = self.middleware_parse.from_spider(self.spider.parse_response)
 
-            for item in func_(resp):
-                # save data
+        # Flag whether an error occurred .
+        error_flag = 0
+
+        func_ = self.middleware_parse.from_spider(self.spider.parse_response)(resp)
+        while True:
+            try:
+                # parse response .
+                item = next(func_)
+            except StopIteration:
+                break
+            except Exception as e:
+                error_flag = 1
+                pprint(f'Parse response failed !\n\t\t {e}\n\n')
+                logger.error(f'Parse response failed !\n\t\t {e}\n\n')
+                continue
+            try:
+                # save data .
                 logger.debug('Start save data of url <%s>' % url)
+                self.data_persistence.save(item)
+                record_task_info.save_success_plus()
+            except Exception as e:
+                pprint(f'Save data failed !\n\t\t {e}\n\n')
+                logger.error(f'Save data failed !\n\t\t {e}\n\n')
+                record_task_info.save_failed_plus()
 
-                if item is None:
-                    continue
-
-                try:
-                    self.data_persistence.save(item)
-                    record_task_info.save_success_plus()
-                except Exception as e:
-                    pprint(f'Save data failed !\n\t\t {e}\n\n')
-                    logger.error(f'Save data failed !\n\t\t {e}\n\n')
-                    record_task_info.save_failed_plus()
+        if error_flag == 0:
             record_task_info.parse_success_plus()
-        except Exception as e:
-            logger.error(f'ParseResponse of url <%s> failed !\n\t\t {e}\n\n' % url)
+        else:
             record_task_info.parse_failed_plus()
-            return 0
 
     def _request(self, request_instance, retry_times=0, e=None, resp=None):
-        if not isinstance(request_instance, Request):
-            print('\033[32mReturn Type must be Request in run()\nEasyRequest exit !\033[0m')
-            logger.error('Return Type must be Request in run() !')
-
-            return
+        assert isinstance(request_instance, Request)
 
         url = request_instance.url
 
@@ -89,6 +94,7 @@ class SpiderRunner:
         if retry_times > self.spider.settings.RETRY_TIMES:
             logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
             pprint(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
+            record_task_info.request_failed_plus()
             return
 
         retry_times += 1
@@ -142,8 +148,6 @@ class Listener(SpiderRunner):
     def deal_parse_event(self, event):
         resp = event.event
 
-        record_task_info.parse_add(resp.md5)
-
         if resp.callback is None or resp.callback.__name__ == 'parse_response':
             self._parse_resp_and_save_by_generator(resp)
 
@@ -151,11 +155,16 @@ class Listener(SpiderRunner):
             try:
                 callback_iter = MixFuncGeneratorMiddleWare(resp.callback)(resp)
                 for request_instance in callback_iter:
+                    if not isinstance(request_instance, Request):
+                        raise ReturnTypeError(Request)
                     self.put_request_to_pool(request_instance)
                 record_task_info.parse_success_plus()
+
             except Exception as e:
                 logger.error(f'''Occur Error in <{resp.callback.__name__}>:\n\t{e}''')
+                pprint(f'''Occur Error in <{resp.callback.__name__}>:\n\t{e}''')
                 record_task_info.parse_failed_plus()
+        record_task_info.parse_add(resp.md5)
 
 
 class SendTasks:
@@ -167,6 +176,11 @@ class SendTasks:
         """
         Send a instance of Request .
         """
+
+        if not isinstance(request_instance, Request):
+            pprint(f'Return Type in all callback function must be an instance of Request ,got {type(request_instance)}')
+            logger.error(f'Return Type must be an instance of Request ,got {type(request_instance)}')
+            return
 
         event = Event(type_=Event.EVENT_REQUEST)
         event.event = request_instance

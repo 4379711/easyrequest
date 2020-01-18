@@ -78,7 +78,11 @@ class ParserMiddleWares(BaseMiddleWares):
                 except StopIteration:
                     raise StopIteration
                 except Exception as e:
-                    yield self.exception(e, resp)
+                    tmp = self.exception(e, resp)
+                    if tmp is None:
+                        raise e
+                    else:
+                        yield tmp
 
         else:
 
@@ -88,7 +92,11 @@ class ParserMiddleWares(BaseMiddleWares):
                 self.after(resp)
                 yield result
             except Exception as e:
-                yield self.exception(e, resp)
+                tmp = self.exception(e, resp)
+                if tmp is None:
+                    raise e
+                else:
+                    yield tmp
 
     @abstractmethod
     def exception(self, error, resp):

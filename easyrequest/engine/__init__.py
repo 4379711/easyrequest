@@ -5,7 +5,9 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 
+from easyrequest import Request
 from easyrequest.middlewares import MixFuncGeneratorMiddleWare
+from easyrequest.utils import pprint
 from .register import Register, Listener, Event, record_task_info, logger
 
 
@@ -62,13 +64,18 @@ class SpiderEngine:
 
         # Get all instance of Request from run() .
         for request_instance in request_iter:
+            if not isinstance(request_instance, Request):
+                pprint(f'Return Type in run() must be an instance of Request ,got {type(request_instance)}')
+                logger.error(f'Return Type in run() must be an instance of Request ,got {type(request_instance)}')
+                self.stop()
+                return
             self.task_sender.send_request(request_instance=request_instance)
 
         while True:
             request_success, request_failed, parse_success, parse_failed, save_success, save_failed = \
                 record_task_info.info
 
-            if (request_success + request_failed) == (parse_success + parse_failed) != 0 and \
+            if request_success == (parse_success + parse_failed) != 0 and \
                     record_task_info.two_set_same:
                 info_str = f"""The result of this task:
                 

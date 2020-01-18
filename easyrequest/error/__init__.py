@@ -19,7 +19,7 @@ class ReturnTypeError(Exception):
         self.name = name
 
     def __str__(self):
-        return 'Return Type must be %s ' % self.name.__name__
+        return 'Return Type must be %s .' % self.name.__name__
 
     __repr__ = __str__
 
@@ -30,7 +30,7 @@ class ParameterError(Exception):
         self.whos = whos
 
     def __str__(self):
-        return '%s parameter must be %s ' % (self.whos.__name__, self.name.__name__)
+        return '%s parameter must be %s .' % (self.whos.__name__, self.name.__name__)
 
     __repr__ = __str__
 
@@ -52,7 +52,7 @@ class ConfigError(Exception):
         self.name = name
 
     def __str__(self):
-        return 'Error of %s config in settings' % self.name
+        return 'Error of %s config in settings .' % self.name
 
     __repr__ = __str__
 
