@@ -69,6 +69,10 @@ class SpiderEngine:
             request_success, request_failed, parse_success, parse_failed, save_success, save_failed = \
                 record_task_info.info
 
+            if request_success == parse_success == parse_failed == 0 and request_failed != 0:
+                self.stop()
+                break
+
             if request_success == (parse_success + parse_failed) != 0 and \
                     record_task_info.requests_is_empty:
                 info_str = f"""The result of this task:

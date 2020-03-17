@@ -11,7 +11,7 @@ class >>{classname}RequestMiddleWare(RequestMiddleWares):
 
         pass
 
-    def after(self, url):
+    def after(self, url, params):
         # Called after request each url .
 
         pass
@@ -39,4 +39,4 @@ class >>{classname}ParserMiddleWare(ParserMiddleWares):
         # Return None ,will do nothing .
         # Return a item ,will save it .
 
-        print(error, resp)
+        pass

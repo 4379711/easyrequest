@@ -85,38 +85,62 @@ class SpiderRunner:
         else:
             record_task_info.parse_failed_plus()
 
-    def _request(self, request_instance, retry_times=0, e=None, resp=None):
+    # def _request(self, request_instance, retry_times=0, e=None, resp=None):
+    #     assert isinstance(request_instance, Request)
+    #
+    #     url = request_instance.url
+    #
+    #     if 0 < retry_times <= self.spider.settings.RETRY_TIMES:
+    #         logger.warning(f'Retry <{retry_times}> : request of url <{url}>')
+    #
+    #     if retry_times > self.spider.settings.RETRY_TIMES:
+    #         logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
+    #         pprint(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
+    #         record_task_info.request_failed_plus()
+    #         return
+    #
+    #     retry_times += 1
+    #
+    #     logger.debug('start request of url <%s>' % url)
+    #
+    #     try:
+    #         resp = self.middleware_request(request_instance.request)(url=url, params=self.default_config)
+    #
+    #     except Exception as e:
+    #         return self._request(request_instance, retry_times, e, resp)
+    #
+    #     finally:
+    #         if not resp:
+    #             record_task_info.request_failed_plus()
+    #         else:
+    #             record_task_info.request_success_plus()
+    #             self.task_sender.send_parse(resp)
+    #         # sleep after each request
+    #         time.sleep(self.spider.settings.REQUEST_DELAY)
+
+    def _request(self, request_instance):
         assert isinstance(request_instance, Request)
-
+        error = None
+        resp = None
         url = request_instance.url
-
-        if 0 < retry_times <= self.spider.settings.RETRY_TIMES:
-            logger.warning(f'Retry <{retry_times}> : request of url <{url}>')
-
-        if retry_times > self.spider.settings.RETRY_TIMES:
-            logger.error(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
-            pprint(f'retry {retry_times - 1} times still failed ! \n{e}\n\n')
+        for retry_times in range(self.spider.settings.RETRY_TIMES + 1):
+            if retry_times > 0:
+                logger.warning(f'Retry <{retry_times}> : request of url <{url}>')
+            logger.debug('start request of url <%s>' % url)
+            try:
+                resp = self.middleware_request(request_instance.request)(url=url, params=self.default_config)
+            except Exception as e:
+                error = e
+            finally:
+                # sleep after each request
+                time.sleep(self.spider.settings.REQUEST_DELAY)
+        if resp:
+            record_task_info.request_success_plus()
+            self.task_sender.send_parse(resp)
+        else:
             record_task_info.request_failed_plus()
-            return
-
-        retry_times += 1
-
-        logger.debug('start request of url <%s>' % url)
-
-        try:
-            resp = self.middleware_request(request_instance.request)(url=url, config=self.default_config)
-
-        except Exception as e:
-            return self._request(request_instance, retry_times, e, resp)
-
-        finally:
-            if not resp:
-                record_task_info.request_failed_plus()
-            else:
-                record_task_info.request_success_plus()
-                self.task_sender.send_parse(resp)
-            # sleep after each request
-            time.sleep(self.spider.settings.REQUEST_DELAY)
+            logger.error(f'retry {self.spider.settings.RETRY_TIMES} times still failed ! \n{error}\n\n')
+            pprint(f'retry {self.spider.settings.RETRY_TIMES} times still failed ! \n{error}\n\n')
 
 
 class Event:

@@ -11,7 +11,7 @@ with open("README.md", "r", encoding='utf-8') as fh:
 
 setup(
     name='EasyRequest',
-    version="2.1",
+    version="2.2",
     description=(
         "A easy use request frame !"
     ),
