@@ -33,9 +33,9 @@ DEFAULT_REQUEST_HEADERS = {
 # INTERVAL : How often pack logs
 LOG_CONFIG = {
     'LOG_PATH': 'logs',
-    'DEBUG': True,
-    'INFO': True,
-    'WARNING': True,
+    'DEBUG': False,
+    'INFO': False,
+    'WARNING': False,
     'ERROR': True,
     'INTERVAL': 7
 }

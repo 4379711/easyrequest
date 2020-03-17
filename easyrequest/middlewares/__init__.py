@@ -27,18 +27,18 @@ class RequestMiddleWares(BaseMiddleWares):
         else:
             return types.MethodType(self, instance)
 
-    def __call__(self, config):
+    def __call__(self, url, config):
         try:
             self.before(config)
             result = self.func(config)
             self.after()
             return result
         except Exception as e:
-            self.exception(e, config)
+            self.exception(e, url, config)
             raise e
 
     @abstractmethod
-    def exception(self, error, params):
+    def exception(self, error, url, params):
         pass
 
     @classmethod
